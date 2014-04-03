@@ -1,23 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  
- <title>Jekyll Bootstrap</title>
- <link href="http://username.github.io/" rel="self"/>
- <link href="http://username.github.io"/>
- <updated>2014-04-02T21:47:05-05:00</updated>
- <id>http://username.github.io</id>
+ <title>DataJoint blog</title>
+ <link href="http://datajoint.github.io/" rel="self"/>
+ <link href="http://datajoint.github.io"/>
+ <updated>2014-04-03T00:03:32-05:00</updated>
+ <id>http://datajoint.github.io</id>
  <author>
-   <name>Name Lastname</name>
-   <email>blah@email.test</email>
+   <name>Dimitri Yatsenko</name>
+   <email>yatsenko@cns.bcm.edu</email>
  </author>
 
  
  <entry>
-   <title>Testing Jekyll</title>
-   <link href="http://username.github.io/2014/04/02/testing-jekyll"/>
+   <title>Making friends</title>
+   <link href="http://datajoint.github.io/examples/2014/04/03/making-friends"/>
+   <updated>2014-04-03T00:00:00-05:00</updated>
+   <id>http://datajoint.github.io/examples/2014/04/03/making-friends</id>
+   <content type="html">
+&lt;p&gt;This &lt;a href=&quot;http://www.reddit.com/r/mysql/comments/20kc8s/is_there_an_efficient_way_to_find_all_pairs_of/&quot;&gt;post&lt;/a&gt; asks to make an efficient SQL query for matching pairs of rows.  Here I show how it would be done in DataJoint for MATLAB.&lt;/p&gt;
+
+&lt;p&gt;Let table &lt;code&gt;users.Friends&lt;/code&gt; be defined (in MATLAB) as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;%{
+users.Friends (manual)  # friendships 
+user1 :  int  #  user inviting friendship
+user2 :  int  #  user accepting friendship
+%}
+classdef Friends &amp;lt; dj.Relvar
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A friend “invite” from 432 to user 876 would create a new row:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;insert(users.Friends, struct(&#39;user1&#39;,432,&#39;user2&#39;,876))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A friend “accept” would create another row with user values swapped:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;insert(users.Friends, struct(&#39;user1&#39;,876,&#39;user2&#39;,432))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So a friend relationship consist of two rows in &lt;code&gt;users.Friends&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;How does one lookup all friends of user 432?&lt;/p&gt;
+
+&lt;p&gt;With this design, this query can be done so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;res = (users.Friends &amp;amp; &#39;user1=432&#39;)*...
+    pro(users.Friends,&#39;user1-&amp;gt;user2&#39;,&#39;user2-&amp;gt;user1&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compare this to equivalent SQL code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;select 
+    *
+from
+    friends f1 join
+    friends f2 on f1.user_1=f2.user_2 and f1.user_2=f2.user_1
+where
+    f1.user_1=432 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, the provided design did not conform to DataJoint’s best practices for data regularization. In a DataJoint database, objects are identified by the same primary key with the same attribute names everywhere. So a user would not be identified by &lt;code&gt;user1&lt;/code&gt; in one place and &lt;code&gt;user2&lt;/code&gt; in another.&lt;/p&gt;
+
+&lt;p&gt;In DataJoint, we would first create a user table&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;%{
+users.User (manual)  # tables of users
+user_id  : int  # universal user id
+----
+fullname   : varchar(255)  # user&#39;s name
+%}
+classdef User &amp;lt; dj.Relvar
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let’s populate it with two records:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;u = users.User;
+u.insert(struct(&#39;user_id&#39;,876,&#39;fullname&#39;,&#39;Romeo&#39;))
+u.insert(struct(&#39;user_id&#39;,432,&#39;fullname&#39;,&#39;Juliet&#39;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let’s define the &lt;code&gt;Friend&lt;/code&gt; table, which references &lt;code&gt;Users&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;%{
+users.Friends (manual) # friendship invites
+invite_id  : int auto_increment   # friendship id
+role = &quot;inviter&quot;      : enum(&quot;inviter&quot;,&quot;accepter&quot;)  # users&#39; role in this invite
+-----
+-&amp;gt;users.User
+status = &quot;requested&quot;  : enum(&quot;requested&quot;,&quot;accepted&quot;)   # status
+%}
+
+classdef Friends &amp;lt; dj.Relvar
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User 432 invites user 876 by making an “Accepted” tuple for himself and “Requested” tuple for his future friend:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;inviter = 432;
+invitee = 876;
+f = users.Friends;
+f.insert(struct(&#39;user_id&#39;, inviter,&#39;role&#39;, &#39;inviter&#39;, &#39;status&#39;, &#39;accepted&#39;))
+f.insert(struct(&#39;invite_id&#39;, i.lastInsertID, &#39;user_id&#39;, invitee, &#39;role&#39;, &#39;accepter&#39;, &#39;status&#39;, &#39;requested&#39;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The invitee can check her unanswered requests as&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;unanswered = f &amp;amp; struct(&#39;user_id&#39;,invitee,&#39;status&#39;,&#39;requested&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The invitee can accept all the unanswered requests by changing the status to “accepted”:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;replies = unanswered.fetch(&#39;*&#39;);
+replies = arrayfun(@(k) setfield(k,&#39;status&#39;,&#39;accepted&#39;), replies);
+f.insert(replies,&#39;REPLACE&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, a user can see her friends by getting pairs of &lt;code&gt;Friends&lt;/code&gt; tuples in which both statuses are “accepted”:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;me = struct(&#39;user_id&#39;,432);    % who is asking
+f = f &amp;amp; &#39;status=&quot;accepted&quot;&#39;;  % accepted friendships
+f1 = f.pro(&#39;user_id&#39;,&#39;role&#39;); 
+% prepare for join by renaming attributes in friends&#39; tuples
+f2 = f.pro(&#39;user_id-&amp;gt;friend_id&#39;,&#39;role-&amp;gt;friend_role&#39;);
+% get friends&#39; ids
+friendIds = fetchn(f1*f2 &amp;amp; &#39;user_id&amp;lt;&amp;gt;friend_id&#39; &amp;amp; me, &#39;friend_id&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Counting distinct values</title>
+   <link href="http://datajoint.github.io/tips/2014/04/03/counting-distinct-values"/>
+   <updated>2014-04-03T00:00:00-05:00</updated>
+   <id>http://datajoint.github.io/tips/2014/04/03/counting-distinct-values</id>
+   <content type="html">
+&lt;p&gt;Here is how you cound count the number of distinct values in a relation.&lt;/p&gt;
+
+&lt;p&gt;Let’s work with table &lt;code&gt;psy.Session&lt;/code&gt; that defines sessions of psychophysics experiments and table &lt;code&gt;psy.Grating&lt;/code&gt; that defines drifting gratings presented to the subject during that session with attributes &lt;code&gt;direction&lt;/code&gt; and &lt;code&gt;spatial_freq&lt;/code&gt;.  Furthermore, two-photon recordings can be performed during some sessions and synchronized using table &lt;code&gt;tp.Sync&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Below are query examples that count distinct values of attributes of gratings per session.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Find the number of unique grating directions and spatial frequencies per stimulus session&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pro(psy.Session, psy.Grating, ...
+  &#39;count(distinct direction)-&amp;gt;ndirections&#39;, ...
+  &#39;count(distinct spatial_freq)-&amp;gt;n_spat_freqs&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Find all two-photon synchronized sessions with at least 8 grating directions&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pro(tp.Sync, psy.Grating, &#39;count(distinct direction)-&amp;gt;n&#39;) &amp;amp; &#39;n&amp;gt;=8&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;count(distinct ...)&lt;/code&gt; can also be applied to count unique combinations of attribute values:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Find the average number spatial frequencies per direction in each session&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pro(psy.Session, psy.Grating, ...
+ &#39;count(distinct spatial_freq, direction)/count(direction)-&amp;gt;avgndir&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Such queries are particularly useful for creating precise &lt;a href=&quot;https://github.com/datajoint/datajoint-matlab/wiki/Populating-computed-data&quot;&gt;popRels&lt;/a&gt;. &lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Welcome</title>
+   <link href="http://datajoint.github.io/2014/04/02/welcome"/>
    <updated>2014-04-02T00:00:00-05:00</updated>
-   <id>http://username.github.io/2014/04/02/testing-jekyll</id>
-   <content type="html">&lt;p&gt;This blog will contain all news related to DataJoint. Migrating from datajoint.wordpress.com&lt;/p&gt;</content>
+   <id>http://datajoint.github.io/2014/04/02/welcome</id>
+   <content type="html">
+&lt;p&gt;I am migrating the DataJoint blog from &lt;a href=&quot;http://datajoint.wordpress.com&quot;&gt;wordpress&lt;/a&gt; to github for tighter integration with the code and documentation. Your questions and comments are welcome.&lt;/p&gt;
+</content>
  </entry>
  
  

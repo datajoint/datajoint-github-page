@@ -1,12 +1,13 @@
 
-http://username.github.io/about.html
-http://username.github.io/archive.html
-http://username.github.io/atom.xml
-http://username.github.io/categories.html
-http://username.github.io/index.html
-http://username.github.io/pages.html
-http://username.github.io/rss.xml
-http://username.github.io/sitemap.txt
-http://username.github.io/tags.html
+http://datajoint.github.io/archive.html
+http://datajoint.github.io/atom.xml
+http://datajoint.github.io/categories.html
+http://datajoint.github.io/index.html
+http://datajoint.github.io/pages.html
+http://datajoint.github.io/rss.xml
+http://datajoint.github.io/sitemap.txt
+http://datajoint.github.io/tags.html
 
-http://username.github.io/2014/04/02/testing-jekyll
+http://datajoint.github.io/examples/2014/04/03/making-friends
+http://datajoint.github.io/tips/2014/04/03/counting-distinct-values
+http://datajoint.github.io/2014/04/02/welcome
