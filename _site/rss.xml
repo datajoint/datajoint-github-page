@@ -5,8 +5,8 @@
         <description>DataJoint blog - Dimitri Yatsenko</description>
         <link>http://datajoint.github.io</link>
         <link>http://datajoint.github.io</link>
-        <lastBuildDate>2014-04-03T00:03:32-05:00</lastBuildDate>
-        <pubDate>2014-04-03T00:03:32-05:00</pubDate>
+        <lastBuildDate>2014-04-03T00:15:41-05:00</lastBuildDate>
+        <pubDate>2014-04-03T00:15:41-05:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -17,19 +17,19 @@
 
 &lt;p&gt;Let table &lt;code&gt;users.Friends&lt;/code&gt; be defined (in MATLAB) as follows:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;%{
-users.Friends (manual)  # friendships 
-user1 :  int  #  user inviting friendship
-user2 :  int  #  user accepting friendship
-%}
-classdef Friends &amp;lt; dj.Relvar
-end
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;matlab&quot;&gt;&lt;span class=&quot;cm&quot;&gt;%{&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;users.Friends (manual)  # friendships &lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;user1 :  int  #  user inviting friendship&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;user2 :  int  #  user accepting friendship&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;%}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;classdef&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Friends&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Relvar&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A friend “invite” from 432 to user 876 would create a new row:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;insert(users.Friends, struct(&#39;user1&#39;,432,&#39;user2&#39;,876))
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;matlab&quot;&gt;&lt;span class=&quot;n&quot;&gt;insert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;user1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;432&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;user2&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;876&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A friend “accept” would create another row with user values swapped:&lt;/p&gt;
 
@@ -48,14 +48,14 @@ end
 
 &lt;p&gt;Compare this to equivalent SQL code:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;select 
-    *
-from
-    friends f1 join
-    friends f2 on f1.user_1=f2.user_2 and f1.user_2=f2.user_1
-where
-    f1.user_1=432 
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;sql&quot;&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;friends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;join&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;friends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;f1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;432&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;However, the provided design did not conform to DataJoint’s best practices for data regularization. In a DataJoint database, objects are identified by the same primary key with the same attribute names everywhere. So a user would not be identified by &lt;code&gt;user1&lt;/code&gt; in one place and &lt;code&gt;user2&lt;/code&gt; in another.&lt;/p&gt;
 
@@ -141,10 +141,10 @@ friendIds = fetchn(f1*f2 &amp;amp; &#39;user_id&amp;lt;&amp;gt;friend_id&#39; &a
 
 &lt;p&gt;&lt;strong&gt;Find the number of unique grating directions and spatial frequencies per stimulus session&lt;/strong&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;pro(psy.Session, psy.Grating, ...
-  &#39;count(distinct direction)-&amp;gt;ndirections&#39;, ...
-  &#39;count(distinct spatial_freq)-&amp;gt;n_spat_freqs&#39;)
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;matlab&quot;&gt;&lt;span class=&quot;n&quot;&gt;pro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Grating&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&amp;#39;count(distinct direction)-&amp;gt;ndirections&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&amp;#39;count(distinct spatial_freq)-&amp;gt;n_spat_freqs&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Find all two-photon synchronized sessions with at least 8 grating directions&lt;/strong&gt;&lt;/p&gt;
 

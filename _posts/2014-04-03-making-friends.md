@@ -10,7 +10,7 @@ This <a href="http://www.reddit.com/r/mysql/comments/20kc8s/is_there_an_efficien
 
 Let table <code>users.Friends</code> be defined (in MATLAB) as follows:
 
-```
+{% highlight matlab %}
 %{
 users.Friends (manual)  # friendships 
 user1 :  int  #  user inviting friendship
@@ -18,13 +18,13 @@ user2 :  int  #  user accepting friendship
 %}
 classdef Friends < dj.Relvar
 end
-```
+{% endhighlight %}
 
 A friend "invite" from 432 to user 876 would create a new row:
 
-```
+{% highlight matlab %}
 insert(users.Friends, struct('user1',432,'user2',876))
-```
+{% endhighlight %}
 
 A friend "accept" would create another row with user values swapped:
 
@@ -45,15 +45,15 @@ res = (users.Friends & 'user1=432')*...
 
 Compare this to equivalent SQL code:
 
-```SQL
-select 
+{% highlight SQL %}
+SELECT
     *
-from
+FROM
     friends f1 join
     friends f2 on f1.user_1=f2.user_2 and f1.user_2=f2.user_1
-where
+WHERE
     f1.user_1=432 
-```
+{% endhighlight %}
 
 
 However, the provided design did not conform to DataJoint's best practices for data regularization. In a DataJoint database, objects are identified by the same primary key with the same attribute names everywhere. So a user would not be identified by <code>user1</code> in one place and <code>user2</code> in another.

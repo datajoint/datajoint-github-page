@@ -14,11 +14,11 @@ Below are query examples that count distinct values of attributes of gratings pe
 
 **Find the number of unique grating directions and spatial frequencies per stimulus session**
 
-```
+{% highlight matlab %}
 pro(psy.Session, psy.Grating, ...
   'count(distinct direction)->ndirections', ...
   'count(distinct spatial_freq)->n_spat_freqs')
-```
+{% endhighlight %}
 
 __Find all two-photon synchronized sessions with at least 8 grating directions__
 
