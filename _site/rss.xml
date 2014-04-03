@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+        <title>Jekyll Bootstrap</title>
+        <description>Jekyll Bootstrap - Name Lastname</description>
+        <link>http://username.github.io</link>
+        <link>http://username.github.io</link>
+        <lastBuildDate>2014-04-02T21:47:05-05:00</lastBuildDate>
+        <pubDate>2014-04-02T21:47:05-05:00</pubDate>
+        <ttl>1800</ttl>
+
+
+        <item>
+                <title>Testing Jekyll</title>
+                <description>&lt;p&gt;This blog will contain all news related to DataJoint. Migrating from datajoint.wordpress.com&lt;/p&gt;</description>
+                <link>http://username.github.io/2014/04/02/testing-jekyll</link>
+                <guid>http://username.github.io/2014/04/02/testing-jekyll</guid>
+                <pubDate>2014-04-02T00:00:00-05:00</pubDate>
+        </item>
+
+
+</channel>
+</rss>

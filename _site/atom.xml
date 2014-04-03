@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Jekyll Bootstrap</title>
+ <link href="http://username.github.io/" rel="self"/>
+ <link href="http://username.github.io"/>
+ <updated>2014-04-02T21:47:05-05:00</updated>
+ <id>http://username.github.io</id>
+ <author>
+   <name>Name Lastname</name>
+   <email>blah@email.test</email>
+ </author>
+
+ 
+ <entry>
+   <title>Testing Jekyll</title>
+   <link href="http://username.github.io/2014/04/02/testing-jekyll"/>
+   <updated>2014-04-02T00:00:00-05:00</updated>
+   <id>http://username.github.io/2014/04/02/testing-jekyll</id>
+   <content type="html">&lt;p&gt;This blog will contain all news related to DataJoint. Migrating from datajoint.wordpress.com&lt;/p&gt;</content>
+ </entry>
+ 
+ 
+</feed>
