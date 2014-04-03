@@ -22,17 +22,17 @@ pro(psy.Session, psy.Grating, ...
 
 __Find all two-photon synchronized sessions with at least 8 grating directions__
 
-```
+{% highlight matlab %}
 pro(tp.Sync, psy.Grating, 'count(distinct direction)->n') & 'n>=8'
-```
+{% endhighlight %}
 
 <code>count(distinct ...)</code> can also be applied to count unique combinations of attribute values:
 
 **Find the average number spatial frequencies per direction in each session**
 
-```
+{% highlight matlab %}
 pro(psy.Session, psy.Grating, ...
  'count(distinct spatial_freq, direction)/count(direction)->avgndir')
-```
+{% endhighlight %}
 
 Such queries are particularly useful for creating precise [popRels](https://github.com/datajoint/datajoint-matlab/wiki/Populating-computed-data). 
