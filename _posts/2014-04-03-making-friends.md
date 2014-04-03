@@ -10,7 +10,7 @@ This <a href="http://www.reddit.com/r/mysql/comments/20kc8s/is_there_an_efficien
 
 Let table <code>users.Friends</code> be defined (in MATLAB) as follows:
 
-{% highlight Matlab linenos %}
+{% highlight Matlab %}
 %{
 users.Friends (manual)  # friendships 
 user1 :  int  #  user inviting friendship
