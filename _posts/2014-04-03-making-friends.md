@@ -8,7 +8,7 @@ tags: [matlab,example,normal form]
 {% include JB/setup %}
 This <a href="http://www.reddit.com/r/mysql/comments/20kc8s/is_there_an_efficient_way_to_find_all_pairs_of/">post</a> asks to make an efficient SQL query for matching pairs of rows.  Here I show how it would be done in DataJoint for MATLAB.
 
-Let table <code>users.Friends</code> be defined (in MATLAB) as follows:
+Let table **users.Friends** be defined (in MATLAB) as follows:
 
 {% highlight Matlab %}
 %{
@@ -79,7 +79,7 @@ u.insert(struct('user_id',876,'fullname','Romeo'))
 u.insert(struct('user_id',432,'fullname','Juliet'))
 {% endhighlight %}
 
-Let's define the <code>Friend</code> table, which references <code>Users</code>
+Let's define the **Friend** table, which references **Users**
 
 {% highlight Matlab %}
 %{
@@ -119,7 +119,7 @@ replies = arrayfun(@(k) setfield(k,'status','accepted'), replies);
 f.insert(replies,'REPLACE')
 {% endhighlight %}
 
-Finally, a user can see her friends by getting pairs of <code>Friends</code> tuples in which both statuses are "accepted":
+Finally, a user can see her friends by getting pairs of **Friends** tuples in which both statuses are "accepted":
 
 {% highlight Matlab %}
 me = struct('user_id',432);    % who is asking
