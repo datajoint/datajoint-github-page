@@ -2,7 +2,7 @@
 layout: post
 title: "Making friends"
 description: "store and query directed pairs of objects"
-category: examples 
+category: tutorial
 tags: [matlab,example,normal form]
 ---
 {% include JB/setup %}

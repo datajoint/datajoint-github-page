@@ -1,0 +1,5 @@
+
+jekyll serve --watch 
+
+rake post title="Hello, world!"
+

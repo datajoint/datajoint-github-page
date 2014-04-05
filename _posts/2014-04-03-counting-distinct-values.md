@@ -2,7 +2,7 @@
 layout: post
 title: "Counting distinct values"
 description: ""
-category: tips 
+category: tutorial
 tags: [matlab,example]
 ---
 {% include JB/setup %}
