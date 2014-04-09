@@ -16,13 +16,14 @@ Here is an example of a table definition with some attribute comments ommitted
 % +world/City.m
 
 %{ 
-world.City  (manual)  #  world cities and theor
+world.City  (manual)  #  world cities and their locations
 city_id  :  int   # unique city ID  
 ----
 city_name : varchar(50)
 latitude  : float       # (degrees)
 longitude : float
 %}
+
 classdef City < dj.Relvar
 end
 {% endhighlight %}
