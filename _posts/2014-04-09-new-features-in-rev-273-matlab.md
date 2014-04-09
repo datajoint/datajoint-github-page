@@ -10,13 +10,13 @@ Attribute definitions no longer require comments
 ---
 Until version 2.7.3 (MATLAB), attribute definitions in table declarations required a non-empty comment.  This was intended to encourage proper documentation.  However, in many cases a well-named attribute does not require a commment.  So attribute comments are now optional.
 
-Here is an example of table definition with some attribute comments ommitted
+Here is an example of a table definition with some attribute comments ommitted
 
 {% highlight matlab %}
 % +world/City.m
+
 %{ 
 world.City  (manual)  #  world cities and theor
-
 city_id  :  int   # unique city ID  
 ----
 city_name : varchar(50)
