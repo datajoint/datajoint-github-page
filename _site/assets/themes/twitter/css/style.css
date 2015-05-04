@@ -1,4 +1,20 @@
 /* Custom container */
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+h4{
+  font-size: 0.472058064em;
+}
+
 .container-narrow {
   margin: 0 auto;
   max-width: 700px; }
@@ -9,7 +25,7 @@
 .navbar .nav {
   float: right; }
 
-/* posts index */
+
 .post > h3.title {
   position: relative;
   padding-top: 10px; }
@@ -63,3 +79,6 @@
   background: #57A957;
   border: 1px solid #4c964d;
   color: #FFF; }
+
+
+ 

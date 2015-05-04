@@ -11,8 +11,8 @@ kramdown:
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : DataJoint blog
-tagline: organizing data relationally in the science lab
+title : Official DataJoint Website
+tagline: data processing chains for science labs
 author :
   name : DataJoint Team
   email : yatsenko@cns.bcm.edu
