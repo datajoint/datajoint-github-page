@@ -5,12 +5,19 @@ group: navigation
 weight: 3
 ---
 
-<ul>
-{% for post in posts %}
-  {% if post.tags contains 'tutorial' %}
-  <li>
-    <a href="{{ post.url }}">{{ post.title }}</a>
-  </li>
-  {% endif %}
-{% endfor %}
-</ul>
+<table class='tutorialtable'>
+	<thead><th>Title</th><th>Content</th></thead>
+  {% assign post_list = site.posts | sort:"title" %}
+  {% for post in post_list %}
+
+	  {% if post.tags contains 'tutorial' %}
+	  	<tr>
+	    	<td><a href="{{ post.url }}">{{ post.title }}</a></td>
+	    	<td>{{ post.summary }}</a></td>
+	  	</tr>
+	  {% endif %}
+
+  {% endfor %}
+</table>
+
+

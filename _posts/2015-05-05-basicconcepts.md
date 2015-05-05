@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Basic database concepts
-tag: tutorial
+title: 'Basic database concepts'
+tags: ['tutorial']
 ---
 
 The following is a very brief informal introduction to  the relational data model as implemented by DataJoint.

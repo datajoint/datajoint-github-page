@@ -25,7 +25,7 @@ DataJoint easily supports projects that span multiple schemas. For example, it i
 
 ## Create a DataJoint schema
 
-Now let us set up a schema. Assume that you have a database `subjects` in MySQL in which you plan to store some information about trials in a psychophysical experiment. The first task is to define the structure of the tables in that schema. 
+Now let us set up a schema. Assume that you have a database `subjects` in MySQL in which you plan to store some information about trials in a psychophysical experiment. The first task is to define the structure of the tables in that schema. We will just state the code for Matlab and Python, and then explain what it means below. 
 
 ### Matlab
 
@@ -47,7 +47,7 @@ end
 
 `getSchema` basically connects your current package `subj` to your database `subjects`. Each package for DataJoint must have a function called `getSchema` that tells the package which database it should connect (bind) to. 
 
-Now let's define a table for your subjects. Create a file calles `Subjects.m` and put the following content in it
+Now let's define a table for your subjects. Create a file called `Subjects.m` and put the following content in it
 {% highlight matlab %}
 %{
 subj.Subjects (manual) # Basic subject info
@@ -110,5 +110,46 @@ end
 {% endhighlight %}
 
 ### Python	
+
+
+Let's call the module for Python `subj` as well. To create it, you need to creat a file `subj.py`.
+
+Inside this file put 
+
+{% highlight python %}
+
+import datajoint as dj
+
+conn = dj.conn()
+conn.bind(__name__, 'subjects')
+
+class Subjects(dj.Base):
+	definition = """
+	subj.Subjects (manual) # Basic subject info
+
+	subject_id                   : int                     # id number
+	---
+	first=""                     : varchar(20)             # first name
+	last=""                      : varchar(20)             # last name
+	sex="unknown"                : enum('M','F','unknown') # animal's sex
+	subject_ts=CURRENT_TIMESTAMP : timestamp               # automatic
+	"""
+
+class Trials(dj.Base):
+	definition = """
+	subj.Trials (manual)                      # info about trials
+
+	-> subj.Subjects
+	---
+	outcome                    : int           # result of experiment
+
+	notes=""                   : varchar(4096) # other comments 
+	trial_ts=CURRENT_TIMESTAMP : timestamp    # automatic
+	"""
+
+
+{% endhighlight %}
+
+### Explanation
 
 The important part is the comment above the class definition. It states the name of the table (`subj.Subjects`), its primary key(s) `subject_id` and the datatype of the primary key. Everything behind the `#` is treated as comment. 
