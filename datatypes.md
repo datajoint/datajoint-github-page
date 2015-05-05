@@ -1,8 +1,8 @@
 ---
 layout: page
 title: Data types
+weight: 4
 ---
-{% include JB/setup %}
 
 
 DataJoint supports the following datatypes. Use the smallest most restrictive datatype sufficient for your data.  

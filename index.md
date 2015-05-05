@@ -1,9 +1,10 @@
 ---
 layout: page
-title: DataJoint
+title: Home
 tagline: data processing chains for science labs
+weight: 0
 ---
-{% include JB/setup %}
+
 # In a hurry?
 
 Check out these links
