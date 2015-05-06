@@ -5,11 +5,7 @@ group: navigation
 weight: 5
 ---
 
-If you want to contribute your schema to the gallery, please 
-
-* fork this page on [github](https://github.com/datajoint/datajoint.github.io).
-* add another post with the tag 'schema' to `_posts` (just look at the examples).
-* commit, push, and send us a pull request. 
+If you want to contribute your schema to the gallery, please check out the [instructions](/contribute/).
 
 {% assign post_list = site.posts | sort:"title" %}
 
