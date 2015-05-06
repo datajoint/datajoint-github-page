@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 'Basic database concepts'
+summary: 'Definition of common terms for databases'
 tags: ['tutorial']
 ---
 

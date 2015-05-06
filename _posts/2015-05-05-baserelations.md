@@ -5,13 +5,16 @@ tags: ['tutorial','matlab','python','help']
 summary: 'What are base relations?'
 ---
 
-A [Base relvar object](base relvars) represents the relation containing the entire contents of its table. 
+A [Base relvar object](/2015/05/05/baserelvars/) represents the relation containing the entire contents of its table. 
 
-Other relations can now be derived from base relvars using relational operators. 
+Other relations can now be derived from base relvars using relational operators. Note that the relvar objects do not themselves contain any data. They only form the specific query that can be  used to [fetch data](/2015/05/05/fetchingdata/) into the current workspace.
+
+
+## Matlab
 
 The display `display` method shows few tuples from the table and the total count of tuples.  For example, simply typing the class name of `common.Animal` from [schema "common"](example schemas) will display
 
-```
+{% highlight matlab %}
 >> common.Animal
 
 self = 
@@ -46,6 +49,9 @@ self =
            482           482    2012-03-11             M                2012-04-17 1
          .....         .....         .....         .....         .....         .....
 45 tuples (0.0382 s)
-```
 
-Note that the relvar objects do not themselves contain any data. They only form the specific query that can be  used to [fetch data](fetching data) in the MATLAB workspace.
+{% endhighlight %}
+
+## Python
+
+TODO
