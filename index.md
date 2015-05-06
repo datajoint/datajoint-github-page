@@ -5,6 +5,10 @@ tagline: data processing chains for science labs
 weight: 0
 ---
 
+# WORK IN PROGRESS
+
+This website is currently work in progress. The final version and new releases of the libraries should be up by mid of May 2015. 
+
 # In a hurry?
 
 Check out these links
@@ -15,6 +19,7 @@ Check out these links
 * API for Matlab and Python
 
 # What is DataJoint?
+
 DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) and [Python](https://github.com/datajoint/datajoint-python) is a high-level programming interface for MySQL databases to support data processing chains in science labs. DataJoint is built on the foundation of the relational data model and prescribes a consistent method for organizing, populating, and querying data.
 
 DataJoint was initially developed in 2009 by [Dimitri Yatsenko](https://github.com/dimitri-yatsenko) (Baylor College of Medicine) for the distributed processing and management of large volumes of data streaming from regular experiments. Starting in 2011, DataJoint has been available as an open-source project adopted by other labs and substantially improved with  contributions from [Andreas Hoenselaar](https://github.com/ahoenselaar) (CalTech), [Alex Ecker](https://github.com/aecker) (Max Planck Institute for Biological Cybernetics), [Edgar Walker](https://github.com/eywalker) (Baylor College of Medicine), and [Fabian Sinz](https://github.com/fabiansinz) (Baylor College of Medicine) . DataJoint was inspired in part by an earlier database tool called Steinbruch developed by [Alex Ecker](https://github.com/aecker) and [Philipp Berens](https://github.com/philippberens). 
@@ -22,9 +27,10 @@ DataJoint was initially developed in 2009 by [Dimitri Yatsenko](https://github.c
 ## Designed for busy scientists and collaborative data sharing
 The amount of data produced by scientific labs has been steadily increasing. Ensuring long-term accessibilty and reproducibility of results with data aquired by several people, sometimes in several different labs, has become a challenge. In many labs, the default data management scheme comprises the OS file system with clever naming conventions with additional meta data stored in CSV, XML, .MAT files. This works fine for dead storage, but makes more interesting queries difficult, provides no easy way to maintain data dependencies, and becomes problematic when data is shared across labs.
 
-DataJoint provides a flexible, light-weight, yet capable system that allows you to do this. It is easy to learn and use. 
+For example, imagine that you want to compute a summary of all experiments that have been done in your lab during the last 7 years using a particular experimental setting. With a data management scheme that relies on naming of folders you are likely to spend a good amount of time on crawling the different directories and extracting the relevant datasets. Since the naming scheme is never enforced, single persons can (and probably will) violate it. Unfortunately, every deviation from it will require you to either include extra cases in your script or to fix the naming manually. The latter case will almost certainly break the analysis code of some other person in your lab. 
 
-For example, imagine that you want to compute a summary of all experiments that have been done in your lab during the last 7 years using a particular experimental setting. With a data management scheme that relies on naming of folders you are likely to spend a good amount of time on crawling the different directories and extracting the relevant datasets. Since the naming scheme is never enforced, single persons can (and probably will) violate it. Unfortunately, every deviation from it will require you to either include extra cases in your script or to fix the naming manually. The latter case will almost certainly break the analysis code of some other person in your lab. In DataJoint, the data for the above task can be retrieved in one line of code.
+In DataJoint, the data for the above task is just one line of code. DataJoint provides a flexible, light-weight, yet capable system that allows you to organize your data and quickly access it. Even better, it is not hard to learn and use. 
+
 
 ## DataJoint is based on the relational data model and object-relational mapping
 
@@ -134,6 +140,6 @@ Here are some examples of such conventions and limitations:
 1. Vaiceliunaite A, Erisken S, Franzen F, Katzner S, and Busse L (2013). Spatial integration in mouse primary visual cortex. _Journal of Neurophysiology_, 110(4), 964-972. [pubmed 23719206](http://www.ncbi.nlm.nih.gov/pubmed/23719206)
 
 # License
-DataJoint is free software under the [MIT License](http://opensource.org/licenses/mit-license.php/). In addition, we request that any use of DataJoint leading to a publication be acknowledged in the publication.
+DataJoint is free software under the [LGPL License](https://www.gnu.org/licenses/lgpl-2.1.html). In addition, we request that any use of DataJoint leading to a publication be acknowledged in the publication.
 
 <!-- TODO: Include citation here! -->

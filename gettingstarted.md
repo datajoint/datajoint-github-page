@@ -14,24 +14,25 @@ If you have never heard of databases before, take a quick look at [basic databas
 # Define how you data is organized: Create a Schema
 
 ## What is a schema?
-A DataJoint project is organized as a dedicated _schema_: a collection of logically related tables hosted on the database server. The word 'schema' is synonymous with 'database' in this context.
+A DataJoint organizes data in _schemata_: a collection of logically related tables hosted on the database server. The word 'schema' is synonymous with 'database' in this context. We recommend that you use one schema for each project. However, you can also use a single schema for the entire lab. Moreover, DataJoint easily supports projects that span multiple schemas. For example, it is very convenient to set up a common schema for the acquisition and pre-processing of data while data analysis may be performed in separate schemas.
 
-* On the Matlab side, each schema has its own _namespace_ or _package_. Here is the [MathWorks page about packages](http://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). 
+
+
+How you define a schema depends on whether you use the Matlab or the Python package:
+
+* In Matlab, each schema has its own _namespace_ or _package_. Here is the [MathWorks page about packages](http://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). 
 * In Python each schema has its own _module_ or _package_.
 
 A _DataJoint schema_ is the pairing of a MySQL schema and Matlab/Python package. Therefore, by _schema_ we will often mean such a pairing and not just the database.
 
-DataJoint easily supports projects that span multiple schemas. For example, it is very convenient to set up a common schema for the acquisition and pre-processing of data while data analysis may be performed in separate schemas.
 
 ## Create a DataJoint schema
 
-Now let us set up a schema. Assume that you have a database `subjects` in MySQL in which you plan to store some information about trials in a psychophysical experiment. The first task is to define the structure of the tables in that schema. We will just state the code for Matlab and Python, and then explain what it means below. 
+Now let's set up a schema. Assume that you have a database `subjects` in MySQL in which you plan to store some information about trials in a psychophysical experiment. The first task is to define the structure of the tables in that schema. We will just state the code for Matlab and Python, and then explain what it means below. 
 
 ### Matlab
 
-Let's call the package on the Matlab side `subj`. To create it, you need to creat a folder `+subj` and inside that folder you need to create a function `getSchema` in a file called `getSchema.m`. 
-
-This function will look like
+Let's call the package on the Matlab side `subj`. To create it, you need to creat a folder `+subj` and inside that folder you need to create a function `getSchema` in a file called `+subj/getSchema.m`. 
 
 {% highlight matlab %}
 function obj = getSchema
@@ -45,9 +46,8 @@ obj = schemaObject;
 end
 {% endhighlight %}
 
-`getSchema` basically connects your current package `subj` to your database `subjects`. Each package for DataJoint must have a function called `getSchema` that tells the package which database it should connect (bind) to. 
 
-Now let's define a table for your subjects. Create a file called `Subjects.m` and put the following content in it
+We also need to define a table for your subjects. To that end, create a file called `+subj/Subjects.m` and put the following content in it
 {% highlight matlab %}
 %{
 subj.Subjects (manual) # Basic subject info
@@ -78,7 +78,8 @@ end
 
 {% endhighlight %}
 
-Additionally we create a table called `Trials` that stores the outcome of your experiment (let's assume it is just a single number). Create a file called `Trials.m` and add
+Additionally we create a table called `Trials` that stores the outcome of your experiment. (let's assume it is just a single number). Create a file called `+subj/Trials.m` and add
+
 {% highlight matlab %}
 %{
 subj.Trials (manual)                      # info about trials
@@ -152,4 +153,26 @@ class Trials(dj.Base):
 
 ### Explanation
 
+The above example has basically two parts:
+
+* defining the structure of the table
+* connecting the table to the database
+
+#### Defining the structure
+
+The part that defines the structure of the table is the at the top of the files in Matlab and the class variables `definition` in Python. The syntax is the same in both cases. Let's look at it in more detail. 
+
+```
+
+	subj.Subjects (manual) # Basic subject info
+
+	subject_id                   : int                     # id number
+	---
+	first=""                     : varchar(20)             # first name
+	last=""                      : varchar(20)             # last name
+	sex="unknown"                : enum('M','F','unknown') # animal's sex
+	subject_ts=CURRENT_TIMESTAMP : timestamp               # automatic
+```
+
 The important part is the comment above the class definition. It states the name of the table (`subj.Subjects`), its primary key(s) `subject_id` and the datatype of the primary key. Everything behind the `#` is treated as comment. 
+`getSchema` basically connects your current package `subj` to your database `subjects`. Each package for DataJoint must have a function called `getSchema` that tells the package which database it should connect (bind) to. 
