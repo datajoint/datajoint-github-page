@@ -2,7 +2,7 @@
 layout: post
 title: 'Distributed processing'
 tags: ['tutorial','matlab','python','help']
-summary: 'Enter data from several machines.'
+summary: 'Enter data from several machines'
 ---
 
 

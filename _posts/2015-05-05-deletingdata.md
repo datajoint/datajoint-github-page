@@ -2,7 +2,7 @@
 layout: post
 title: 'Deleting data'
 tags: ['tutorial','matlab','python','help']
-summary: 'How to delete data from tables.'
+summary: 'How to delete data from tables'
 ---
 
 Deleting a set of tuples from a table will also recursively delete all corresponding tuples in all its [dependent tables]({% post_url 2015-05-05-foreignkeys %}).
@@ -33,7 +33,7 @@ A summary of data to be deleted is displayed to the user before the delete is ex
 
 When precautions are unnecessary, a faster way to delete a selection of tuples from a table is the method `delQuick'. It is non-interactive and it does not cascade the delete down to dependent tables.
 
-See 
+See also
 
 ```
 help dj.BaseRelvar/del

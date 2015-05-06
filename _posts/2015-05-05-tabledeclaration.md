@@ -5,68 +5,88 @@ tags: ['tutorial', 'matlab', 'python', 'help']
 summary: 'How to declare tables.'
 ---
 
-In DataJoint, table declarations must be provided in the first percent-brace comment block of their [[base relvars]]. This section describes the syntax of table declaration within these blocks.
 
-For examples, review some classes in the schemas `acq`, `ephys`, or `aod` in the [sessions repository](https://github.com/atlab/sessions).
+The part that defines the structure of the table is the at the top of the files in Matlab and the class variables `definition` in Python. The syntax is the same in both cases. Let's look at it in more detail. 
 
-First, all blank lines are ignored. 
-
-## table identity
-The first non-blank line identifies the table as follows:
 ```
-    <package>.<TableName>(tier)   # comment about the table
+	subject_id                   : int                     # id number
+	---
+	first=""                     : varchar(20)             # first name
+	last=""                      : varchar(20)             # last name
+	sex="unknown"                : enum('M','F','unknown') # animal's sex
+	subject_ts=CURRENT_TIMESTAMP : timestamp               # automatic
+
 ```
+* **comments and empty** Everything after a `#` is ignored. Empty lines are ignored as well.
 
-The table name must match the class name. 
+* **table identity**
+	The first non-blank line identifies the table as follows:
 
-`tier` can be one of the following: `lookup`, `manual`, `imported`, or `computed`.  See [[table tiers]].
+	```
+	    <package>.<TableName>(<tier>)   # comment about the table
+	```
 
-Finally the comment is an arbitrary string describing the purpose of the table.  The comment should not contain any double quotes `"`
+	`<package>` denotes the name of the package in Matlab or the module in Python (yes, we also support packages in Python). `<TableName>` must match the name of the class in both languages. `<tier>` can be one of the following: `lookup`, `manual`, `imported`, or `computed`.  For more information see [table tiers](/2015/05/05/tabletiers/) in the tutorial section. For now, we simply use `manual`. 
 
-## primary key  
-The rest of the declaration defines table attributes. The declaration is separated into two parts by a line that starts with at least three minuses `---`. All attributes above the separator make up the [primary key](primary keys). The attributes below the line define regular subordinate attributes.
+The rest of the declaration defines table attributes. The declaration is separated into two parts separated by a line that starts with at least three minuses dashes `---`. 
 
-## foreign keys 
-Foreign keys are declared by including the line  
-```
--> package.AnotherBaseRelvar
-```
-where `package.AnotherBaseRelvar` is the base relvar class name of the referenced table.
+* **primary key**
+	All attributes above the separator make up the [primary key](/2015/05/05/primarykeys/). Primary keys uniquely identify a row (tuple) in a table. There can be no two tuples with the same set of primary key values in a table. Here, we just use an ID to uniquely identify our subjects. 
 
-The effect of adding a foreign key to a Relvar is:
+* **foreign keys**
+	In many cases, you want to introduce a dependency on entries in other tables. For example, each trial is associated with a unique subject. This kind of relation is expressed with [Foreign keys](/2015/05/05/foreignkeys/). They are declared by including the line 
 
-1. The primary key fields of the referenced table are added to the current table (except those that are already included.  Just as with other fields, the new fields are added as primary key fields if the reference is made above the separator and as subordinate fields if below the separator.
-1. A [foreign key constraint](foreign keys) is set to the referenced table.
+	```
+	-> <package>.<AnotherBaseRelvar>
+	```
 
-## attributes
-Other lines of the declaration specify individual attributes as:
-```
-attribute_name  :  datatype   # comment
-```
-or with a default value as 
-```
-attribute_name = default : datatype # comment
-```
-the attribute name must start with a lowercase letter and contain only lowercase letters, digits, and underscores.
+	where `package.AnotherBaseRelvar` is the [base relvar](/2015/05/05/baserelvars/) class name of the referenced table. For example, in the `Trials` class, we define the foreign key `subj.Subjects`. 
 
-`datatype` is a MySQL datatype. See the supported [[datatypes]].
+	```
+	subj.Trials (manual)                      # info about trials
 
-When the default value is provided, then tuples may be inserted without specifying that attribute and the default value will be inserted.  String values and enum values must be enclosed in double quotes `""`.   
+	-> subj.Subjects
+	---
+	outcome                    : int           # result of experiment
 
-When the special value of `null` is specified as the default, the the attribute is specified as _nullable_.  Primary key fields cannot be nullable.  If a tuple is inserted without specifying that field, the value will be missing.  For string attributes, instead of specifying null, consider defaulting to `""`.  An empty string and null are two different things but empty strings are usually easier to work with.
+	notes=""                   : varchar(4096) # other comments 
+	trial_ts=CURRENT_TIMESTAMP : timestamp     # automatic
+	```
 
-The special value `CURRENT_TIMESTAMP` can be used as the default of `timestamp` fields, which is commonly used to timestamp the data.
+* **attributes**
+	The attributes below the line define regular subordinate attributes. They are specified via:
+	
+	```
+	attribute_name  :  datatype   # comment
+	```
+	
+	or with a default value as 
+	
+	```
+	attribute_name = default : datatype # comment
+	```
+	
+	the attribute name must start with a lowercase letter and contain only lowercase letters, digits, and underscores.
 
-## secondary indices
+	`datatype` is a MySQL datatype. Supported datatypes can be found [here](/datatypes/).
 
-You can add secondary (unique) indices to the end of your table declaration:
-```
-+++
-INDEX(attribute1)
-INDEX(attribute1,attribute2,attribute3)
-UNIQUE INDEX(attribute1)
-UNIQUE INDEX(attribute1,attribute2,attribute3)
-```
+	When the default value is provided, tuples may be inserted without specifying that attribute and the default value will be inserted.  String values and enum values must be enclosed in double quotes `""`.   
 
-## examples
-Review examples of table declarations in the base relvars in the [sessions repository](https://github.com/atlab/sessions/tree/master/schemas).
+	When the special value of `null` is specified as the default, the the attribute is specified as _nullable_. If a tuple is inserted without specifying that field, the value will be missing.  For string attributes, instead of specifying null, consider defaulting to `""`.  An empty string and null are two different things but empty strings are usually easier to work with. Primary key fields cannot be nullable. 
+
+	The special value `CURRENT_TIMESTAMP` can be used as the default of `timestamp` fields, which is commonly used to timestamp the data.
+
+* **secondary indices**
+
+	You can add secondary (unique) indices to the end of your table declaration:
+
+	```
+	+++
+	INDEX(attribute1)
+	INDEX(attribute1,attribute2,attribute3)
+	UNIQUE INDEX(attribute1)
+	UNIQUE INDEX(attribute1,attribute2,attribute3)
+	```
+
+## Examples
+Review examples of table declarations in the base relvars in our [gallery](/gallery/).

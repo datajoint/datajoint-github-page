@@ -2,20 +2,36 @@
 layout: post
 title: 'Modifying tables'
 tags: ['tutorial','matlab','python','help']
+summary: 'How to modify tables'
 ---
 
-All [[base relvars]] have the constant property **table** of type **dj.Table**, which provides access to the table definition. 
 
-To _drop a table_ means to remove the table from the database and all its dependent tables recursively with all their contents without removing its MATLAB class definition files. If there are any data in the tables to be dropped, DataJoint will report the total number of tuples and will prompt for an additional confirmation before dropping. 
+Once a table has been declared and populated, it is still possible to change the structure of the table and its foreign keys. These changes are accomplished by the following methods:
 
-Dropping tables is often necessary when the table definition needs to be significantly modified or when the table is no longer necessary. Remember that the table will be created again automatically upon the next instantiation of its base relvar class, so if you want to ensure that the table never comes back, delete its class definition file as well.
+## Matlab
 
-For example, to drop the table of the class `tp.Segmentation`
 ```
->> tp.Segmentation.table.drop
+  dj.Table/addAttribute
+  dj.Table/alterAttribute
+  dj.Table/dropAttribute
+
+  dj.Table/addForeignKey
+  dj.Table/dropForeignKey
+
+  dj.Table/addIndex
+  dj.Table/dropIndex
+
+  dj.Table/setTableComment
 ```
 
-## See also
+For example, change the definition of the existing field `nframes` in table `tp.Align`
+
 ```
->> help dj.Table/drop
+tp.Align.table.alterAttribute('nframes', 'nframes: smallint  # total number of frames')
 ```
+
+Each of these functions will request user confirmation before automatically updating the table declaration in the class file.
+
+## Python 
+
+TODO

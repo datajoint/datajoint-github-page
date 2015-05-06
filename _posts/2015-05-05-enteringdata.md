@@ -2,10 +2,12 @@
 layout: post
 title: 'Entering data'
 tags: ['tutorial','matlab','python','help']
-summary: 'How to insert data in tables.'
+summary: 'How to insert data in tables'
 ---
 
-One can insert tuples into tables from MATLAB scripts using the `insert` command of a [base relvar](base relvars). 
+## Matlab
+
+One can insert tuples into tables from MATLAB scripts using the `insert` command of a [base relvar]({% post_url 2015-05-05-baserelvars %}). 
 
 For example, insert information about an animal from the MATLAB command line.
 
@@ -15,7 +17,9 @@ insert(common.Animal, struct(...
     'date_of_birth', '2012-07-01', ...
     'animal_notes', 'test dummy'))
 ```
+
 or insert multiple tuples 
+
 
 ```matlab
 insert(common.Animal, cell2struct({
@@ -25,10 +29,14 @@ insert(common.Animal, cell2struct({
 }',  {'animal_id'  'date_of_birth'  'sex'  'animal_notes'})
 ```
 
-For [imported](table tiers) and [computed](table tiers) tables, one should only insert data from the `makeTuples` callback as part of DataJoint's standard process for [[populating computed data]].
+For [imported]({% post_url 2015-05-05-tabletiers %}) and [computed]({% post_url 2015-05-05-tabletiers %}) tables, one should only insert data from the `makeTuples` callback as part of DataJoint's standard process for [populating computed data]({% post_url 2015-05-05-populating %}).
 
 See also
 
 ```matlab
 help('dj.BaseRelvar/insert')
 ```
+
+## Python 
+
+TODO
