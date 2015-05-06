@@ -4,7 +4,7 @@ title: Contribute schemata
 weight: 6
 ---
 
-Different scientific settings require different organization of data. We would like to provide a spectrum of schemata in our [galler](/gallery/) to give new users an easier start. If you think you have a cool schema and you would like to share it, we are happy to host it here. 
+Different scientific settings require different organization of data. We would like to provide a spectrum of schemata in our [gallery](/gallery/) to give new users an easier start. If you think you have a cool schema and you would like to share it, we are happy to host it here. 
 
 If you want to contribute, please follow these instructions
 
