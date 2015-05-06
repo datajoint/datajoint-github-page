@@ -13,7 +13,6 @@ description:      'Data organization for science labs'
 url:              https://datajoint.github.com
 baseurl:          /
 
-
 paginate:         5
 
 # Custom vars
