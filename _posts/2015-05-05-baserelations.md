@@ -54,4 +54,5 @@ self =
 
 ## Python
 
-TODO
+In python you can simply call `print(animal)` if `animal` is an instance of the `common.Animal` schema. This will print a similar output to the prompt. 
+

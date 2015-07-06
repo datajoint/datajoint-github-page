@@ -41,4 +41,5 @@ end
 The first percent-brace comment block that starts with `%{` and ends with `%}` has special meaning in DataJoint. It contains the [table declaration](/2015/05/05/tabledeclaration/).  Upon the first invocation of an object of this class, if the table is not yet created in the database, DataJoint will automatically create the table based on this declaration. 
 
 ### Python
- TODO
+ 
+ Python does not (yet) have a similar script, since we think it is easier to create new schemas from existing examples in our [gallery](/gallery/). If you think that such a script is urgently needed, please fork [datajoint-python](https://github.com/datajoint/datajoint-python) on github, create such a function, and send us a pull request. If you think that coding such a function exceeds your coding abilities, you can also raise an issue in the [issue tracker](https://github.com/datajoint/datajoint-python/issues) on github. 

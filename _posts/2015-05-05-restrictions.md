@@ -7,7 +7,7 @@ summary: 'Restriction operator.'
 
 [Relational restriction](http://en.wikipedia.org/wiki/Selection_%28relational_algebra%29) selects the subset of tuples that meet a given condition.
 
-In DataJoint, relational restriction is implemented using MATLAB operators `&` and `-`. 
+In DataJoint, relational restriction is implemented using the operators `&` and `-`. 
 
 The following expression assigns to `rel` all the tuples from `original` that match condition `cond`.
 
@@ -23,9 +23,8 @@ rel = original - cond
 
 The condition `cond` can be another relvar, a structure array, or string containing a condition.
 
-## Matlab
 
-### Restriction by another relvar: _semjoin_ and _antijoin_
+## Restriction by another relvar: _semjoin_ and _antijoin_
 
 Recall that two tuples _match_ when their identically named attributes contain equal values.  When `cond` is another relvar, the result of `original & cond` will contain all tuples for which there exist a matching tuple in `cond`.
 
@@ -40,10 +39,10 @@ If `cond` does not have any attributes with the same names as in `original`, the
 
 In formal [relational algebra](http://en.wikipedia.org/wiki/Relational_algebra), restrictions by another relation are known as [semijoin](http://en.wikipedia.org/wiki/Relational_algebra#Semijoin_.28.E2.8B.89.29.28.E2.8B.8A.29) (`&`) and [antijoin](http://en.wikipedia.org/wiki/Relational_algebra#Antijoin_.28.E2.96.B7.29) (`-`).
 
-### Restriction by a structure array
-Relations can be represented in MATLAB by structure arrays.  Restriction by a structure array has the same meaning as restriction by another relvar.  
+## Restriction by a structure array
+Relations can be represented in MATLAB by structure arrays, and dicts of a list of dicts in Python.  Restriction by a data structure has the same meaning as restriction by another relvar.  
 
-For example,
+For example, in Matlab,
 
 ```
 rel = common.TpSession & struct('animal_id', 14526)
@@ -51,18 +50,37 @@ rel = common.TpSession & struct('animal_id', 14526)
 
 returns all two-photon sessions for animal 14526.
 
-Restriction by a structure plays an important role for addressing tuples or for iterating over tuples. For example, to review groups of tuples in `common.TpScan' for each `common.TpSession`, the following code could be used:
+The corresponding Python call would be
 
 ```
+rel = common.TpSession & dict(animal_id=14526)
+```
+
+Restriction by a structure plays an important role for addressing tuples or for iterating over tuples. For example, to review groups of tuples in `common.TpScan' for each `common.TpSession`, the following code could be used:
+
+{% highlight matlab %}
+
 % iterate through two-photon scans
 for key = fetch(common.TpSession)'   % primary key values of two-photon sessions
     rel = common.TpScan & key;
     % rel now represents all scans for the session identified by key
     ... do something with it here
 end
-```
+{% endhighlight %}
 
-### Restriction by a string condition
+The corresponding Python code would be 
+
+{% highlight python %}
+
+# iterate through two-photon scans
+for key in common.TpSession:   # primary key values of two-photon sessions
+    rel = common.TpScan & key
+    # rel now represents all scans for the session identified by key
+    # ... do something with it here
+{% endhighlight %}
+
+
+## Restriction by a string condition
 
 Finally, `cond` could be a string containing a condition. These conditions are simply plugged into the SQL query and must be specified in SQL boolean expression syntax.
 
@@ -107,6 +125,3 @@ will describe all animals that did not participate in either kind of session, wh
 rel = common.Animal - psy.Session - common.TpSession
 ```
 
-## Python
-
-TODO

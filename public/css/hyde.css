@@ -66,7 +66,7 @@ html {
   text-align: center;
   padding: 2rem 1rem;
   color: rgba(255,255,255,.5);
-  background-color: LightSteelBlue;
+  background-color: #0485d1;
   box-shadow: 5px 5px 5px #888888;
 }
 @media (min-width: 48em) {

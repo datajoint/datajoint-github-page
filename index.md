@@ -20,7 +20,7 @@ Check out these links
 
 # What is DataJoint?
 
-DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) and [Python](https://github.com/datajoint/datajoint-python) is a high-level programming interface for MySQL databases to support data processing chains in science labs. DataJoint is built on the foundation of the relational data model and prescribes a consistent method for organizing, populating, and querying data.
+DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) and [Python3](https://github.com/datajoint/datajoint-python) is a high-level programming interface for MySQL databases to support data processing chains in science labs. DataJoint is built on the foundation of the relational data model and prescribes a consistent method for organizing, populating, and querying data.
 
 DataJoint was initially developed in 2009 by [Dimitri Yatsenko](https://github.com/dimitri-yatsenko) (Baylor College of Medicine) for the distributed processing and management of large volumes of data streaming from regular experiments. Starting in 2011, DataJoint has been available as an open-source project adopted by other labs and substantially improved with  contributions from [Andreas Hoenselaar](https://github.com/ahoenselaar) (CalTech), [Alex Ecker](https://github.com/aecker) (Max Planck Institute for Biological Cybernetics), [Edgar Walker](https://github.com/eywalker) (Baylor College of Medicine), and [Fabian Sinz](https://github.com/fabiansinz) (Baylor College of Medicine) . DataJoint was inspired in part by an earlier database tool called Steinbruch developed by [Alex Ecker](https://github.com/aecker) and [Philipp Berens](https://github.com/philippberens). 
 
@@ -68,11 +68,14 @@ trial_ts=CURRENT_TIMESTAMP  : timestamp           # automatic
 In python, the corresponding definition looks like
 {% highlight python %}
 import datajoint as dj
+schema = dj.schema('mydatabase', locals())
 
-class Trial(dj.Base):
+@schema
+class Trial(dj.Manual):
 	definition = """
-	psy.Trial (manual)      # visual stimulus trial
-	-> psy.Session
+	# visual stimulus trial
+
+    -> psy.Session
 	trial_idx       : int   # trial index within sessions
 	---
 	-> psy.Condition
@@ -103,10 +106,10 @@ The corresponding MySQL command that DataJoint generates automatically upon the 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='visual stimulus trial' 
 {% endhighlight %}
 
-Luckily, you will never have to deal with it. 
+While you probably have a pretty good idea about what is going on in the Python or the Matlab code, it is a lot harder to figure that out for the MySQL command. Luckily, you will never have to deal with it. 
 
 ## Simple code sharing
-Since table definitions are included in simple Matlab/Python files, you only need to share the MATLAB files to replicate the same functionality somewhere else.
+Since table definitions are included in simple Matlab/Python files, you only need to share these files to replicate the same functionality somewhere else.
 
 ## Automated computations with referential integrity
 
@@ -124,7 +127,7 @@ Here are some examples of such conventions and limitations:
 
 * DataJoint does not allow updating an individual attribute value in a given tuple (SQL's UPDATE command): all data manipulations are done by inserting or deleting whole tuples. This is done for good reason since referential constraints (foreign keys) only enforce data dependencies between tuples but not between individual attributes.
 
-* DataJoint limits some operators to enforce clarity. For example, its projection operator does not allow projecting out any of the primary key attributes. This ensures that the result of the projection operator has the same cardinality as the original relation (the same number of rows). If the user really intends to produce a relation with a different primary key, she must explicitly declare such a relation in the form of a base relvar. Again, this is not a real limitation but a specific prescription of how things should be done in a uniform manner.
+* DataJoint limits some operators to enforce clarity. For example, its projection operator does not allow projecting out any of the primary key attributes. This ensures that the result of the projection operator has the same cardinality as the original relation (the same number of rows). If the user really intends to produce a relation with a different primary key, she must explicitly declare such a relation in the form of a [base relvar](2015/05/05/baserelvars/). Again, this is not a real limitation but a specific prescription of how things should be done in a uniform manner.
 
 * In DataJoint, all foreign keys between tables are formed between identically named fields. This convention allows easy specification of functional dependencies and easy relational join operators. It also allows to replace the many forms of the join operator in other language with a single natural join operator. In a large schema, this convention may lead to long composite primary keys in tables that are low in the dependency hierarchy, but MySQL handles these with ease.  This convention is particularly important in DataJoint because it allows tables across the database or multiple databases to be logically linked without having to follow the path of intermediate dependencies. 
 
@@ -140,6 +143,6 @@ Here are some examples of such conventions and limitations:
 1. Vaiceliunaite A, Erisken S, Franzen F, Katzner S, and Busse L (2013). Spatial integration in mouse primary visual cortex. _Journal of Neurophysiology_, 110(4), 964-972. [pubmed 23719206](http://www.ncbi.nlm.nih.gov/pubmed/23719206)
 
 # License
-DataJoint is free software under the [LGPL License](https://www.gnu.org/licenses/lgpl-2.1.html). In addition, we request that any use of DataJoint leading to a publication be acknowledged in the publication.
+DataJoint is free software under the [LGPL License](https://www.gnu.org/licenses/lgpl-2.1.html). In addition, we ask you to acknowledge DataJoint in every publication for which DataJoint was used.
 
 <!-- TODO: Include citation here! -->

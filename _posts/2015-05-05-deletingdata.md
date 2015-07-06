@@ -42,4 +42,22 @@ help dj.BaseRelvar/delQuick
 
 ## Python
 
-TODO
+To delete a selection of tuples from a [base relvar]({% post_url 2015-05-05-baserelvars %}), you can use the objects function `delete`. For example, if `segm = tp.Segmentation()`, then 
+
+* deleting an entire table is carried out via the command
+	```
+	segm.delete()
+	```
+
+* deleting a subset of a table (`sess = common.TpSession()`)
+
+	```
+	(segm & (sess & 'session_date >= "2013-01-01"')).delete()
+	```
+
+	deletes all tuples from `segm` that match tuples from `sess` with `session_date` greater than `2013-01-01`. Or, in English, _delete all segmentations from two-photon sessions acquired since Jan 1, 2013_.
+
+	Again, the delete will cascade to all the dependent tables.
+
+**Warning:** In contrast to Matlab, Python will not display a summary or ask you to confirm the delete. The deletion is permanent and cannot be undone.
+

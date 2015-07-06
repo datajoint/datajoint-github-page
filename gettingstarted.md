@@ -21,7 +21,7 @@ A DataJoint organizes data in _schemata_: a collection of logically related tabl
 How you define a schema depends on whether you use the Matlab or the Python package:
 
 * In Matlab, each schema has its own _namespace_ or _package_. Here is the [MathWorks page about packages](http://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). 
-* In Python each schema has its own _module_ or _package_.
+* In Python there is no such restriction. However, we still recommend putting all objects for one schema in one file. 
 
 A _DataJoint schema_ is the pairing of a MySQL schema and Matlab/Python package. Therefore, by _schema_ we will often mean such a pairing and not just the database.
 
@@ -99,12 +99,12 @@ Inside this file put
 
 import datajoint as dj
 
-conn = dj.conn()
-conn.bind(__name__, 'subjects')
+schema = dj.schema('subjects', locals())
 
-class Subjects(dj.Base):
+@schema
+class Subjects(dj.Manual):
 	definition = """
-	subj.Subjects (manual) # Basic subject info
+	# Basic subject info
 
 	subject_id                   : int                     # id number
 	---
@@ -114,11 +114,12 @@ class Subjects(dj.Base):
 	subject_ts=CURRENT_TIMESTAMP : timestamp               # automatic
 	"""
 
-class Trials(dj.Base):
+@schema
+class Trials(dj.Manual):
 	definition = """
-	subj.Trials (manual)                      # info about trials
+	# info about trials
 
-	-> subj.Subjects
+	-> Subjects
     trial_id                   : int          # trial id
 	---
 	outcome                    : int           # result of experiment
@@ -143,23 +144,60 @@ Each class needs to know where to find the tables it represents. DataJoint alrea
 
 In Matlab, the function `+subj/getSchema.m` connects the database `subjects` to the package `subj`. Each package must have a `getSchema.m` function. 
 
-In Python, the lines 
+In Python, the line
 
 ```
-conn = dj.conn()
-conn.bind(__name__, 'subjects')
+schema = dj.schema('subjects', locals())
 ```
 
-tell DataJoint to connect the module `subj` (stored in `__name__`) to the database `subjects`.
+creates a decorator for all classes that represent tables from the database `subjects`. You can create as many decorators as you want and connect different classes in the module to different databases on the server. The second argument `locals()` provides DataJoint with information about other objects that are referenced in the table definition. It basically needs to be a dictionary that maps `FOREIGNKEYNAME` to the respective object. `locals()` will work in almost all situations. 
 
 
 #### Defining the structure
 
-The part that defines the structure of the table is the at the top of the files in Matlab and the class variables `definition` in Python. The syntax is the same in both cases. Let's look at it in more detail. 
+The part that defines the structure of the table is the at the top of the files in Matlab and the class variables `definition` in Python. The syntax is very similar for Matlab and Python, but not identical. 
+
+Matlab requires you to specify the package, the table name, and the [table tier](/2015/05/05/tabletiers/). This is done in the first line as follows:
+
+```
+    <package>.<TableName>(<tier>)   # comment about the table
+```
+
+`<package>` denotes the name of the package in Matlab. `<TableName>` must match the name of the class. `<tier>` can be one of the following: `lookup`, `manual`, `imported`, or `computed`.  For more information see [table tiers](/2015/05/05/tabletiers/) in the tutorial section. For now, we simply use `manual`. Additionally, you need to provide a table comment describing what is stored in the table. 
+
+
+```
+	subj.Subjects (manual) # Basic subject info
+	....
 
 ```
 
-	subj.Subjects (manual) # Basic subject info
+In Python, the [table tier](/2015/05/05/tabletiers/) and the table name are specified by the class definition itself
+
+{% highlight python %}
+@schema
+class Subjects(dj.Manual):
+	# ...
+{% endhighlight %}
+
+
+Therefore, the table definition only needs to provide the table comment
+
+```
+
+	# Basic subject info
+
+	...
+```
+
+
+The remaining part of the table definition defines the structure of the table. Let's look at it in more detail. 
+
+* **comments and empty lines** `#` denote optional comments. Everything behind it is ignored. Empty lines are ignored as well.
+
+```
+
+	...
 
 	subject_id                   : int                     # id number
 	---
@@ -169,18 +207,6 @@ The part that defines the structure of the table is the at the top of the files 
 	subject_ts=CURRENT_TIMESTAMP : timestamp               # automatic
 
 ```
-* **comments and empty lines** `#` denote optional comments. Everything behind it is ignored. Empty lines are ignored as well.
-
-* **table identity**
-	The first non-blank line identifies the table as follows:
-
-	```
-	    <package>.<TableName>(<tier>)   # comment about the table
-	```
-
-	`<package>` denotes the name of the package in Matlab or the module in Python (yes, we also support packages in Python). `<TableName>` must match the name of the class in both languages. `<tier>` can be one of the following: `lookup`, `manual`, `imported`, or `computed`.  For more information see [table tiers](/2015/05/05/tabletiers/) in the tutorial section. For now, we simply use `manual`. 
-
-The rest of the declaration defines table attributes. The declaration is separated into two parts separated by a line that starts with at least three dashes `---`. 
 
 * **primary key**
 	All attributes above the separator make up the [primary key](/2015/05/05/primarykeys/). Primary keys uniquely identify a row (tuple) in a table. There can be no two tuples with the same set of primary key values in a table. Here, we just use an ID to uniquely identify our subjects. 
@@ -188,11 +214,11 @@ The rest of the declaration defines table attributes. The declaration is separat
 * **foreign keys**
 	In many cases, you want to introduce a dependency on entries in other tables. For example, each trial is associated with a unique subject. This kind of relation is expressed with [Foreign keys](/2015/05/05/foreignkeys/). They are declared by including the line 
 
+
 	```
 	-> <package>.<AnotherBaseRelvar>
 	```
-
-	where `package.AnotherBaseRelvar` is the [base relvar](/2015/05/05/baserelvars/) class name of the referenced table. For example, in the `Trials` class, we define the foreign key `subj.Subjects`. However, we also need another primary key to allow for several trials. If the primary keys were just the foreign key, we could only have one trial per subject. 
+	in Matlab. where `package.AnotherBaseRelvar` is the [base relvar](/2015/05/05/baserelvars/) class name of the referenced table. For example, in the `Trials` class, we define the foreign key `subj.Subjects`. However, we also need another primary key to allow for several trials. If the primary keys were just the foreign key, we could only have one trial per subject. 
 
 	```
 	subj.Trials (manual)                      # info about trials
@@ -206,6 +232,18 @@ The rest of the declaration defines table attributes. The declaration is separat
 	notes=""                   : varchar(4096) # other comments 
 	trial_ts=CURRENT_TIMESTAMP : timestamp     # automatic
 	```
+
+
+	In Python, we indicate foreign keys by
+
+	```
+	-> Subjects
+	```
+	You can use whatever name the relation class has in the local context. For instance, you could import a class called `Animals` from another schema via `from my_other_schema import Animals as LabAnimals` and then refer to it in the table definition as `->LabAnimals`. This approach is quite powerful and gives the user a lot of freedom how to define and group schemata. 
+
+
+
+
 
 * **attributes**
 	The attributes below the line define regular subordinate attributes. They are specified via:
@@ -226,7 +264,7 @@ The rest of the declaration defines table attributes. The declaration is separat
 
 	When the default value is provided, tuples may be inserted without specifying that attribute and the default value will be inserted.  String values and enum values must be enclosed in double quotes `""`.   
 
-	When the special value of `null` is specified as the default, the the attribute is specified as _nullable_. If a tuple is inserted without specifying that field, the value will be missing.  For string attributes, instead of specifying null, consider defaulting to `""`.  An empty string and null are two different things but empty strings are usually easier to work with. Primary key fields cannot be nullable. 
+	When the special value of `null` is specified as the default, the attribute is specified as _nullable_. If a tuple is inserted without specifying that field, the value will be missing.  For string attributes, instead of specifying null, consider defaulting to `""`.  An empty string and null are two different things but empty strings are usually easier to work with. Primary key fields cannot be nullable. 
 
 	The special value `CURRENT_TIMESTAMP` can be used as the default of `timestamp` fields, which is commonly used to timestamp the data.
 
@@ -274,51 +312,46 @@ from subj import Subjects, Trials
 s = Subjects()
 t = Trials()
 
-s.insert((1, 'John', 'Doe', 'M')) # insert a single subject
+s.insert1({'subject_id':1, 'first':'John', 'last':'Doe', 'sex':'M'}) # insert a single subject
 
 {% endhighlight %}
 
-`insert` supports _tuples_, _lists_, _dictionaries_, and _numpy structured arrays_. 
+`insert1` supports _dictionaries_, and _numpy structured arrays_. 
 
-Similarly, we could insert single trials. For adding multiple rows at once, we use the `batch_insert` function
+Similarly, we could insert single trials. For adding multiple rows at once, we use the `insert` function
 
 {% highlight python %}
 
-t.batch_insert([(1, 2,0,'equipment was not working'), (1, 3, 0)])
+t.insert([dict(subject_id=1, trial_id=2,outcome=0,notes='equipment was not working'), \
+		  dict(subject_id=1, trial_id=3, outcome=0)])
 
 {% endhighlight %}
-
-Python also offers an `iter_insert` function that takes an iterator which yields single rows that get inserted. This can, for instance, be useful when inserting data from [pandas](http://pandas.pydata.org/) dataframes. 
 
 ## Querying and retrieve data
 
 Let's assume we already entered some data in the tables. `Subjects` and `Trials` look now like
 
 ```
-subject_id   first        last         sex          subject_ts  
-+----------+ +----------+ +----------+ +----------+ +----------+
-1            John         Doe          M            2015-05-08 1
-2            Joane        Doe          F            2015-05-08 1
-2 tuples
 
-subject_id   trial_id     outcome      notes        trial_ts    
-+----------+ +----------+ +----------+ +----------+ +----------+
-1            0            3            no comment   2015-05-08 1
-1            1            2            no comment   2015-05-08 1
-1            2            8            no comment   2015-05-08 1
-1            3            7            no comment   2015-05-08 1
-1            4            9            no comment   2015-05-08 1
-1            5            8            no comment   2015-05-08 1
-1            6            5            no comment   2015-05-08 1
-1            7            8            no comment   2015-05-08 1
-1            8            7            no comment   2015-05-08 1
-1            9            8            no comment   2015-05-08 1
-1            10           7            no comment   2015-05-08 1
-1            11           6            no comment   2015-05-08 1
-1            12           7            no comment   2015-05-08 1
+subject_id     first          last           sex            subject_ts    
++------------+ +------------+ +------------+ +------------+ +------------+
+1              John           Doe            M              2015-05-14 11:
+2              Joan           Doe            F              2015-05-14 11:
+ (2 tuples)
 
+subject_id     trial_id       outcome        notes          trial_ts      
++------------+ +------------+ +------------+ +------------+ +------------+
+1              0              6              no comment     2015-05-14 11:
+2              0              7              no comment     2015-05-14 11:
+1              1              7              no comment     2015-05-14 11:
+2              1              8              no comment     2015-05-14 11:
+1              2              9              no comment     2015-05-14 11:
+2              2              5              no comment     2015-05-14 11:
+1              3              8              no comment     2015-05-14 11:
 ...
-20 tuples
+ (40 tuples)
+
+
 ```
 
 Now we can start to query for certain datapoints. For example, assume we want to exclude the first five trials for each subject from our analysis. 
@@ -326,5 +359,87 @@ Now we can start to query for certain datapoints. For example, assume we want to
 This can be done by a [restriction]({% post_url 2015-05-05-restrictions %}). In both Matlab and Python the command is
 
 ```
+t5 = t & 'trial_id > 5'
+```
+
+`t5` now represents a new relation that keeps all the trials with `trial_id > 5`. If you print it to the promt you'll see
 
 ```
+subject_id     trial_id       outcome        notes          trial_ts      
++------------+ +------------+ +------------+ +------------+ +------------+
+1              6              2              no comment     2015-05-14 11:
+2              6              5              no comment     2015-05-14 11:
+1              7              3              no comment     2015-05-14 11:
+2              7              5              no comment     2015-05-14 11:
+1              8              1              no comment     2015-05-14 11:
+2              8              5              no comment     2015-05-14 11:
+1              9              2              no comment     2015-05-14 11:
+...
+ (28 tuples)
+
+```
+
+Note that the data is not fetched or kept in `t5`. To actually retrieve the data, we need the command
+
+{% highlight matlab %}
+
+data = fetch(t5)
+
+{% endhighlight %}
+
+
+in Matlab or 
+
+{% highlight python %}
+
+data = t5.fetch()
+
+{% endhighlight %}
+
+in Python. This command fetches the data form the database and writes it in the variable data. Note that this is highly efficient: We don't copy the data into the workspace before we actually decided what data we want. 
+
+Another way we could have written this restriction is 
+
+```
+t5 = t - 'trial_id <= 5'
+```
+
+which just excludes all trials that match the condition. 
+
+The second term in restrictions does not need to be a string. It can also be another relation or even a struct in Matlab or a dictionary in Python.
+
+For instance, in Python 
+
+```
+t5 = t & (s & "sex='M'") - "trial_id < 5"
+```
+
+yields
+
+```
+subject_id     trial_id       outcome        notes          trial_ts      
++------------+ +------------+ +------------+ +------------+ +------------+
+1              5              2              no comment     2015-05-14 11:
+1              6              2              no comment     2015-05-14 11:
+1              7              3              no comment     2015-05-14 11:
+1              8              1              no comment     2015-05-14 11:
+1              9              2              no comment     2015-05-14 11:
+1              10             7              no comment     2015-05-14 11:
+1              11             3              no comment     2015-05-14 11:
+...
+ (15 tuples)
+```
+
+which is all the trials from subject 1, who is male, starting with trial ID 5.
+
+# How to go on from here
+
+Now you know how to create relations, enter data, and retrieve data in DataJoint. However, these are just the very basics. DataJoint can do much more. We have a tutorial section where you can read up on 
+
+* the full power of [restrictions]({% post_url 2015-05-05-restrictions%}).
+* how to combine relations in a smart way using [join]({% post_url 2015-05-05-join%}).
+* how to [rename, add, project out, and aggregate]({% post_url 2015-05-05-projection%}) columns (attributes).
+* how to [modify]({% post_url 2015-05-05-modifyingtables %}) tables.
+* how to [delete]({% post_url 2015-05-05-deletingdata %}) data from your database or how to [drop]({% post_url 2015-05-05-droppingtables%}) entire tables. 
+* how to [populate]({% post_url 2015-05-05-populating%}) tables with automatically computed data. 
+* many more [topics](/tutorials/).

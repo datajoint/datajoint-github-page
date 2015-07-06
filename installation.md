@@ -41,9 +41,11 @@ DataJoint is written for python 3.4. For Mac OS X and Windows users, we recommen
 Additionally, you will need the following libraries
 
 * numpy
-* pymysql
+* pymysql	
 * matplotlib
 * json
+* pandas
+* networkx
 
 # Installing DataJoint
 
@@ -123,7 +125,49 @@ See
 
 **Linux**
 
-Add the following lines to `~/.bashrc` or `~/.profile`:
+Go to the directory, where you want to run scripts from. Open the python3 interpreter and import datajoint
+
+{% highlight python %}
+import datajoint as dj
+{% endhighlight %}
+
+You will see the following output
+
+{% highlight bash %}
+Local config file dj_local_conf.json does not exist! Creating it.
+{% endhighlight %}
+
+Edit the file `dj_local_conf.json`
+
+{% highlight json %}
+{
+    "database.host": "mysqlhost.university.edu",
+    "database.password": "datajoint",
+    "database.port": 3306,
+    "loglevel": "DEBUG",
+    "display.width": 14,
+    "display.limit": 7,
+    "safemode": true,
+    "database.user": "myusername",
+    "connection.init_function": null
+}
+{% endhighlight %}
+
+and replace *USER* with your database user and *PASSWORD* with your database password. If you are not running mysql locally, you need to replace host as well. In most cases, this should be all you need to do. Now DataJoint will use these settings when you start it from the same directory. If you don't want to specify the password in the file, just delete the line. DataJoint will ask you for the password once it tries to connect to the database.
+
+You can test the connection via
+{% highlight python %}
+import datajoint as dj
+c = dj.conn()
+{% endhighlight %}
+
+This should show you 
+{% highlight bash %}
+Connected myuser@mysqlhost.university.edu:3306
+{% endhighlight %}
+
+
+<!-- Add the following lines to `~/.bashrc` (or `~/.zshrc` if you are fancy) or `~/.profile`:
 
 {% highlight bash %}
 EXPORT DJ_HOST = "mysqlhost.university.edu:3306"    
@@ -132,7 +176,7 @@ EXPORT DJ_PASS = "mypassword"
 {% endhighlight %}
 
 and replace the information in the string with your information. Note that the server port is appended to the host name, separated by a colon.
-
+ -->
 
 
 
@@ -175,44 +219,3 @@ If you are familiar with SQL, you can execute SQL commands using the connection 
 >> query(dj.conn, 'SHOW SCHEMAS')
 {% endhighlight %}
 
-
-## Python
-
-Open the python3 interpreter and import datajoint
-
-{% highlight python %}
-import datajoint as dj
-{% endhighlight %}
-
-You will see the following output
-
-{% highlight bash %}
-Local config file dj_local_conf.json does not exist! Creating it.
-{% endhighlight %}
-
-Edit the file `dj_local_conf.json`
-
-{% highlight json %}
-{
-  "database.user": "myusername",
-  "database.port": 3306,
-  "database.host": "mysqlhost.university.edu",
-  "database.password": "mypassword",
-  "connection.init_function": null,
-  "config.varname": "DJ_LOCAL_CONF",
-  "config.file": "dj_local_conf.json"
-}
-{% endhighlight %}
-
-and replace *USER* with your database user and *PASSWORD* with your database password. If you are not running mysql locally, you need to replace host as well. In most cases, this should be all you need to do. Now DataJoint will use these settings when you start it from the same directory. 
-
-You can test the connection via
-{% highlight python %}
-import datajoint as dj
-c = dj.conn()
-{% endhighlight %}
-
-This should show you 
-{% highlight bash %}
-Connected myuser@mysqlhost.university.edu:3306
-{% endhighlight %}
