@@ -5,7 +5,7 @@ tags: ['tutorial','matlab','python','help']
 summary: 'Projection operator'
 ---
 
-DataJoint's projection operator `pro` derives a new relvar that has the same number of tuples as the input relvar but with a modified set of attributes (columns).
+DataJoint's projection operator `pro` (or `project` in Python) derives a new relvar that has the same number of tuples as the input relvar but with a modified set of attributes (columns).
 
 A single call to `pro` can perform any combination of the following [relational operators](http://en.wikipedia.org/wiki/Relational_algebra):
 
@@ -78,8 +78,3 @@ richSessions = pro(psy.Sessions, psy.Trials, 'count(distinct cond_id)->nconds') 
 
 produces the selection of psychophysics sessions in which the number of unique condition ids across all trials exceeds 30.
 
-See also
-
-```
->> help dj.GeneralRelvar/pro
-```

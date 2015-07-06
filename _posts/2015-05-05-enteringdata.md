@@ -39,4 +39,22 @@ help('dj.BaseRelvar/insert')
 
 ## Python 
 
-TODO
+The equivalent calls in Python would be
+
+```python
+common.Animal.insert1(
+		dict(animal_id=13, date_of_birth='2012-07-01', sex='M', animal_notes='test dummy'))
+```
+
+or insert multiple tuples 
+
+
+```python
+
+common.Animal.insert([
+	dict(animal_id=13, date_of_birth='2012-07-01', sex='M', animal_notes='test dummy')),
+	dict(animal_id=14, date_of_birth='2012-07-02', sex='F', animal_notes='another test')),
+	dict(animal_id=15, date_of_birth='2012-08-01', sex='M', animal_notes=''))
+	])
+
+```

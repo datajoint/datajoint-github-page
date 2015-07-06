@@ -28,4 +28,18 @@ See also
 
 ## Python 
 
-TODO
+In Python, the equivalent call would be
+
+
+{% highlight python %}
+tp.Segmentation.drop()
+{% endhighlight %}
+
+This call will drop the table and all tables that reference it, recursively. If you only want to drop one table, without dropping the referening tables (not recommended!), you can use
+
+{% highlight python %}
+tp.Segmentation.drop_quick()
+{% endhighlight %}
+
+Note that the classes that refer to the table can still exist after dropping a table. If you try to create a new instance from it, an error will be raised. 
+

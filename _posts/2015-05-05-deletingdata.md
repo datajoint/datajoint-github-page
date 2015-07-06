@@ -59,5 +59,5 @@ To delete a selection of tuples from a [base relvar]({% post_url 2015-05-05-base
 
 	Again, the delete will cascade to all the dependent tables.
 
-**Warning:** In contrast to Matlab, Python will not display a summary or ask you to confirm the delete. The deletion is permanent and cannot be undone.
+**Warning:** In contrast to Matlab, Python will only display a summary or ask you to confirm the delete if you set `"safemode": true` in `dj_local_conf.json`. 
 

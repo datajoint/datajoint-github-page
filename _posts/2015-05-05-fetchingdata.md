@@ -12,7 +12,8 @@ The fetch operators always perform a relational [projection]({% post_url 2015-05
 ## Matlab
 
 For more details, see 
-```
+
+``` matlab
 >> doc dj.Relvar/pro
 >> doc dj.Relvar/fetch
 >> doc dj.Relvar/fetch1
@@ -21,4 +22,4 @@ For more details, see
 
 ## Python
 
-TODO
+DataJoint Relations in Python provide the member functions `fetch1` and `fetch`. These return numpy structured arrays by default, but can also return a list of dictionaries. Fetching into pandas DataFrames is planned, but not implemented yet. 

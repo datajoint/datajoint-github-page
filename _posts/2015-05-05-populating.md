@@ -47,7 +47,28 @@ end
 
 ### Python 
 
-TODO
+For Python, the naming is different but the basic mechanisms are the same
+
+{% highlight python %}
+
+class Align(dj.Computed):
+  definition = """
+  # skipped table definition here
+  """
+
+  @property
+  def populate_from(self):
+    return common.TpScan
+    
+
+  def _make_tuples(self, key):
+    # fetch data and extend key
+    # ...
+    self.insert1(key)
+
+
+{% endhighlight %}
+
 
 ## Populating the table
 
@@ -70,9 +91,15 @@ The populate method accepts arguments that are applied to further restrict the p
 
 ### Python 
 
-TODO
+For Python, the mechanisms are the same, but the syntax is a little different
 
-## Defining the popRel
+{% highlight python %}
+Align().populate()
+{% endhighlight%}
+
+
+
+## Defining the popRel/ populate_from
 
 ### Matlab
 
@@ -80,11 +107,10 @@ The populate relation is the relvar for which the current table must have matchi
 
 ### Python 
 
-TODO
+In Python, the populate relation is implemented by the property `populate_from`. If this function is not implemented, the default behaviour is the join of the table's immediate ancestors in the hierarchy. 
 
-## Defining makeTuples
+## Defining makeTuples/ \_make_tuples
 
-### Matlab
 
 The `makeTuples` callback must fill out the remaining attributes and insert the newly formed tuple or tuples into the table using the command self.insert(key).
 
@@ -94,19 +120,18 @@ The makeTuples callback consists of the following sections:
 2. compute the missing fields in the structure key
 3. call self.insert(key)
 
-Important: for referential integrity, `makeTuples()` should only retrieve data from tables that are direct ancestors of the present table and their ancestors' subtables. Fetching from tables that are not above the current table in the hierarchy may result in outdated tuples when the referenced data are changed. If data are needed from other tables, the schema should be updated to place the desired data above the current table. This constraint is not physically enforced by DataJoint for the sake of performance, making this the user's responsibility.
+**Important**: for referential integrity, `makeTuples()` should only retrieve data from tables that are direct ancestors of the present table and their ancestors' subtables. Fetching from tables that are not above the current table in the hierarchy may result in outdated tuples when the referenced data are changed. If data are needed from other tables, the schema should be updated to place the desired data above the current table. This constraint is not physically enforced by DataJoint for the sake of performance, making this the user's responsibility.
 
-### Python 
-
-TODO
 
 ## Subtables
 
-### Matlab
-
-A subtable is an imported or computed table that is populated by its ancestor in the table hierarchy. As such, a subtable's relvar class does not inherit from dj.AutoPopulate and does not define a populate relation. It may still define the makeTuples callback, however. Their makeTuples callback must be called directly from a parent's makeTuples (and therefore should not be a protected function as a regular makeTuples is). Thus subtable tuples are always inserted together with their parent tuples in one atomic transaction. In addition, DataJoint disables direct deletes from subtables so that, to delete from a subtable, one must delete from its parent table.
+A subtable is an imported or computed table that is populated by its ancestor in the table hierarchy. As such, a subtable's relvar class does not inherit from dj.AutoPopulate and does not define a populate relation. It may still define some kind of makeTuples callback, however. Their makeTuples callback must be called directly from a parent's makeTuples/\_make_tuples. Thus subtable tuples are always inserted together with their parent tuples in one atomic transaction. In addition, DataJoint disables direct deletes from subtables so that, to delete from a subtable, one must delete from its parent table.
 
 Subtables enable many-to-one dependencies. Matching tuples in a table and its subtable can be considered as an inseparable group. Another table can now refer to a parent tuple to establish a dependency on the matching group of tuples in the subtable. For example, a single image segmentation, represented by a tuple in table Segmentations results in multiple image masks represented by tuples in Masks, which will appear all together with its parent tuple or not at all. The Segmentations/makeTuples then calls the Masks/makeTuples after inserting its own tuple:
+
+
+### Matlab
+
 
 {% highlight matlab %}
 % Segmentations/makeTuples
@@ -116,11 +141,17 @@ function makeTuples(self, key)
   makeTuples(MaskSorts, key)
 {% endhighlight %}
 
-TODO: I will add clearer and more illustrative examples in this section.
 
 ### Python 
 
-TODO
+{% highlight python %}
+# Segmentations/makeTuples
+def _make_muples(self, key):
+  # computation happens 
+  self.insert(key)
+  Masks().makeTuples(key)
+  MaskSorts().makeTuples(key)
+{% endhighlight %}
 
 ## Transaction processing
 
@@ -130,8 +161,3 @@ Note that makeTuples calls are performed within individual atomic transaction: I
 
 Transaction processing makes DataJoint transaction-safe: interrupted or failed processes do not leave incomplete data behind.
 
-TODO: this section needs to be better organized and further clarified.
-
-### Python 
-
-TODO

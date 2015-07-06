@@ -13,11 +13,6 @@ DataJoint intentionally does not provide a way to update values of individual at
 
 Foreign keys create a dependency hierarchy which is reflected by the [entity relationship diagram]({% post_url 2015-05-05-erd %}).
 
-### Matlab Example
-
-For example, table [`common.TpScan`](http://github.com/atlab/commons/blob/master/schemas/+common/TpScan.m) references table [`common.TpSession`](http://github.com/atlab/commons/blob/master/schemas/+common/TpSession.m). 
-The line `-> common.TpSession` in the declaration of `common.TpScan` creates the foreign key constraint. 
-
 Adding a foreign key has the following effects:
 
 * The primary key attributes of the referenced table are added to the declaration of the dependent table. For example, the primary key of `common.TpScan` in our example will become `(animal_id,tp_session,scan_idx)`.
@@ -26,3 +21,46 @@ Adding a foreign key has the following effects:
 * [Dropping table]({% post_url 2015-05-05-droppingtables %}) `common.TpSession` will also drop table `common.TpScan`.
 
 To enforce referential integrity, DataJoint does not provide the ability to updates individual field values in an existing tuple: To change the value of a tuple, one must be delete it first and then insert it again, allowing the database to check and enforce the referential constraints.
+
+### Matlab Example
+
+For example, table [`common.TpScan`](http://github.com/atlab/commons/blob/master/schemas/+common/TpScan.m) references table [`common.TpSession`](http://github.com/atlab/commons/blob/master/schemas/+common/TpSession.m). 
+The line `-> common.TpSession` in the declaration of `common.TpScan` creates the foreign key constraint. 
+
+### Python Example
+
+The equivalent definition in python would look like
+
+
+{% highlight python %}
+
+import where_TpSession_lives
+
+schema = dj.schema('common', locals())
+
+@schema
+class TpScan(dj.Manual):
+		
+	definition = """
+	# scanimage scan info
+	
+	->where_TpSession_lives.TpSession
+	scan_idx : smallint # scanimage-generated sequential number
+	
+	-----
+	
+	surfz               : float   # (um) z-coord at pial surface
+	depth=0             : int     # manual depth measurement 
+	laser_wavelength    : float # (nm)
+	laser_power         : float # (mW) to brain
+	cortical_area="V1"  : enum('other','unknown','V1','LM','AL','PM') # Location of scan
+	scan_notes = ""     : varchar(4095)  #  free-notes
+	scan_ts = CURRENT_TIMESTAMP : timestamp   # don't edit
+
+	"""
+
+
+
+{% endhighlight %}
+
+Note that the foreign key is specified by the *local name* of the other table. If `common.TpSession` had been imported via `from where_TpSession_lives import TpSession as peter`, you would define the foreign key as `->peter`.

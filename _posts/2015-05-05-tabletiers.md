@@ -2,10 +2,10 @@
 layout: post
 title: 'Table tiers'
 tags: ['tutorial','matlab','python','help']
+summary: 'Specifying the type of table.'
 ---
 
-Every table in a DataJoint schema is assigned one of the four tiers: `lookup`, `manual`, `imported`, or `computed`.  The tier helps establish the basic role of the 
-data in the table and how valuable (difficult to replace) these data are.
+Every table in a DataJoint schema is assigned one of the four tiers: `lookup`, `manual`, `imported`, or `computed`.  The tier helps establish the basic role of the data in the table and how valuable (difficult to replace) these data are. In Python, the tier is specified by inheriting from `dj.Manual`, `dj.Computed`, `dj.Lookup`, or `dj.Imported`. Additionally, one can mix in inheritance from `dj.Subordinate` to indicate that the table is a subtable. 
 
 **Lookup** tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up.
 

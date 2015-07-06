@@ -34,4 +34,4 @@ Each of these functions will request user confirmation before automatically upda
 
 ## Python 
 
-TODO
+In Python these functions are not provided at the moment,  but we are working on it ...
