@@ -7,7 +7,7 @@ weight: 0
 
 # WORK IN PROGRESS
 
-This website is currently work in progress. The final version and new releases of the libraries should be up by end of June 2015. 
+This website is currently work in progress. The final version and new releases of the libraries should be up by end of July 2015. 
 
 # In a hurry?
 
