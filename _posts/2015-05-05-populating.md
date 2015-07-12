@@ -57,7 +57,7 @@ class Align(dj.Computed):
   """
 
   @property
-  def populate_from(self):
+  def populated_from(self):
     return common.TpScan
     
 
@@ -99,7 +99,7 @@ Align().populate()
 
 
 
-## Defining the popRel/ populate_from
+## Defining the popRel/ populated_from
 
 ### Matlab
 
@@ -107,7 +107,7 @@ The populate relation is the relvar for which the current table must have matchi
 
 ### Python 
 
-In Python, the populate relation is implemented by the property `populate_from`. If this function is not implemented, the default behaviour is the join of the table's immediate ancestors in the hierarchy. 
+In Python, the populate relation is implemented by the property `populated_from`. If this function is not implemented, the default behaviour is the join of the table's immediate ancestors in the hierarchy. 
 
 ## Defining makeTuples/ \_make_tuples
 
