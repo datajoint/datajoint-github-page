@@ -5,18 +5,16 @@ tagline: data processing chains for science labs
 weight: 0
 ---
 
-# WORK IN PROGRESS
-
-This website is currently work in progress. The final version and new releases of the libraries should be up by end of July 2015. 
-
 # In a hurry?
+Download DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) or [Python3](https://github.com/datajoint/datajoint-python).
 
-Check out these links
 
-* Getting started
-* Introductory tutorial
-* Schemata gallery
-* API for Matlab and Python
+Check out these links to get started 
+
+* [Getting started](gettingstarted/)
+* [Introductory tutorials](tutorials/)
+* [Schemata gallery](gallery/)
+* [API for Python](http://datajoint-python.readthedocs.org/en/latest/)
 
 # What is DataJoint?
 
