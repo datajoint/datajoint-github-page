@@ -16,6 +16,21 @@ Check out these links to get started
 * [Schemata gallery](gallery/)
 * [API for Python](http://datajoint-python.readthedocs.org/en/latest/)
 
+# Please cite us
+
+Scientists get rewarded by citations. If you use DataJoint, please acknowledge us
+
+```
+@article{Yatsenko2015,
+  author = "D. Yatsenko and J. Reimer and A. S. Ecker and E. Y. Walker and F. Sinz and P. Berens and A. Hoenselaar and R. J. Cotton and A. S. Siapas and A. S. Tolias",
+  title = "DataJoint: Managing big scientifc data using MATLAB or Python",
+  year = 2015,
+  journal = "Journal of Neurophysiology (accepted)",
+  month = "Nov",
+  doi = "10.1101/031658"
+}
+```
+
 # What is DataJoint?
 
 DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) and [Python3](https://github.com/datajoint/datajoint-python) is a high-level programming interface for MySQL databases to support data processing chains in science labs. DataJoint is built on the foundation of the relational data model and prescribes a consistent method for organizing, populating, and querying data.
@@ -129,16 +144,6 @@ Here are some examples of such conventions and limitations:
 
 * In DataJoint, all foreign keys between tables are formed between identically named fields. This convention allows easy specification of functional dependencies and easy relational join operators. It also allows to replace the many forms of the join operator in other language with a single natural join operator. In a large schema, this convention may lead to long composite primary keys in tables that are low in the dependency hierarchy, but MySQL handles these with ease.  This convention is particularly important in DataJoint because it allows tables across the database or multiple databases to be logically linked without having to follow the path of intermediate dependencies. 
 
-
-# Publications that used datajoint
-1. Yatsenko D, Josic K, Ecker AS, Froudarakis E, Cotton RJ, and Tolias AS (2015). Improved estimation and interpretation of correlations in neural circuits. _PLoS Comput Biol_ 11(3): e1004083. doi:10.1371/journal.pcbi.1004083 [link](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004083)
-1. Erisken S, Vaiceliunaite A, Jurjut O, Fiorini M, Katzner S, and Busse, L (2014). Effects of Locomotion Extend throughout the Mouse Early Visual System. _Current Biology_, 24(24), 2899-2907.
-1. Reimer J, Froudarakis E, Cadwell CR, Yatsenko D, Denfield GH, Tolias AS (2014). Pupil fluctuations track fast switching of cortical states during quiet wakefulness. _Neuron_, 84(2), 355-362.
-1. Erisken S, Vaiceliunaite A, Jurjut O, Fiorini M, Katzner S, and Busse L (2014). Effects of Locomotion Extend throughout the Mouse Early Visual System. _Current Biology_, 24(24), 2899-2907.
-1. Froudarakis E, Berens P, Ecker AS, Cotton RJ, Sinz FH, Yatsenko D, Saggau P, Bethge M, and Tolias AS. Population code in mouse V1 facilitates readout of natural scenes through increased sparseness. _Nature neuroscience_ (2014). [link](http://www.nature.com/neuro/journal/v17/n6/full/nn.3707.html) 
-1. Ecker AS, Berens P, Cotton RJ, Subramaniyan M, Denfield GH, Cadwell CR, Smirnakis SM, Bethge M, and Tolias AS (2014): State dependence of noise correlations in macaque primary visual cortex. Neuron 82(1). [link](http://www.cell.com/neuron/abstract/S0896-6273(14)00104-4) [code](https://github.com/aecker/ecker2014) [data](http://bethgelab.org/files/ecker2014.zip) [pdf](http://toliaslab.files.wordpress.com/2011/06/ecker_2014_with_supplement.pdf)
-1. Cotton RJ, Froudarakis E, Storer P, Saggau P, and Tolias AS (2013). Three-dimensional mapping of microcircuit correlation structure. _Frontiers in neural circuits_, 7. [pubmed 24133414](http://www.ncbi.nlm.nih.gov/pubmed/24133414)
-1. Vaiceliunaite A, Erisken S, Franzen F, Katzner S, and Busse L (2013). Spatial integration in mouse primary visual cortex. _Journal of Neurophysiology_, 110(4), 964-972. [pubmed 23719206](http://www.ncbi.nlm.nih.gov/pubmed/23719206)
 
 # License
 DataJoint is free software under the [LGPL License](https://www.gnu.org/licenses/lgpl-2.1.html). In addition, we ask you to acknowledge DataJoint in every publication for which DataJoint was used.
