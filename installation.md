@@ -5,29 +5,41 @@ group: navigation
 weight: 1
 ---
 
-# Prerequisites
+# Configure MySQL Server
 
-## Mysql Server
-**Do I need to install a MySQL server?**
+##Does your institution already have a MySQL server?
 
-Very likely your institution has a MySQL server running somewhere. Kindly request an account, a user name, and the necessary rights to setup databases. 
+Very likely your institution's IT department can administer a MySQL server and can give you access. Kindly request an account with necessary rights. 
 
-**Linux**
-Under the widespread Debian/Ubuntu/Mint systems, the server is installed via
+You will need to create many databases.  To avoid conflicts with other users, ask the database administrator to give you full access to any database that begins with your username followed by an underscore. 
+
+For example, if your username is `eleanor`, the command to run on the MySQL server is
+
+{% highlight SQL %}
+GRANT ALL PRIVILEGES ON `eleanor\_%`.* TO 'eleanor'@'%' 
+{% endhighlight %}
+
+##Installing  on your own
+
+MySQL provides detailed information on installing and configuring a server on their [webpage](https://dev.mysql.com/doc/refman/en/installing.html).
+
+We also recommend using [MariaDB](https://mariadb.com) rather than MySQL. 
+
+##Linux
+Under Debian/Ubuntu/Mint systems, the server is installed via
 
 {% highlight bash %}
 sudo apt-get install mysql-server
 {% endhighlight %}
 
-If you are not using one of those, we probably do not need to tell you how to install a mysql server. 
+##Mac OS X
+An all-in-one installation of the MySQL sever is provided by [MAMP](https://www.mamp.info/en/). 
 
-**Mac OS X**
+If you are using a package manager such as [homebrew](http://brew.sh/), you can install MySQL or MariaDB. 
+For example, this [blog](https://emson.co.uk/2012/01/installing-mariadb-using-homebrew/) describes installing MariaDB using brew.
 
-For Mac OS X, you can install a local server via a [.dmg](http://dev.mysql.com/doc/mysql-macosx-excerpt/5.7/en/macosx-installation-pkg.html).
-
-**Windows**
-
-A description how to install MySQL on a local Windows machine can be found [here](http://dev.mysql.com/doc/refman/5.5/en/mysql-installer.html).
+##Windows
+An all-in-one installation of the MySQL server is provided by [WAMP](http://www.wampserver.com).
 
 ## Matlab or Python
 **Matlab version**
