@@ -7,11 +7,10 @@ weight: 2
 
 The following publications used DataJoint for their data analysis. If you used datajoint and want your publication listed here, please either fork this site on github, add it, and send us a pull request, or submit an [issue](https://github.com/datajoint/datajoint.github.io/issues) for this [repo](https://github.com/datajoint/datajoint.github.io).
 
-1. Baden T, Berens P, Franke K, Rezac M, Bethge M, and Euler T (2015). The functional diversity of retinal ganglion cells in the mouse.
-_Nature_ (accepted). 
+1. Baden T, Berens P, Franke K, Rezac M, Bethge M, and Euler T (2015). The functional diversity of retinal ganglion cells in the mouse.  _Nature_, 529(7586), pp.345-350. [link](http://www.nature.com/nature/journal/v529/n7586/abs/nature16468.html) 
 1. Cadwell CR, Palasantza A, Jiang X, Berens P, Deng Q, Reimer J, Tolias K, Bethge M, Tolias AS (2015).
 Morphological, electrophysiological and transcriptomic profiling of single neurons using Patch-seq.
-_Nature Biotechnology_ (accepted). 
+_Nature Biotechnology_ [link](http://www.nature.com/nbt/journal/vaop/ncurrent/full/nbt.3445.html) 
 1. Jiang X, Shen S, Cadwell CR, Berens P, Sinz F, Ecker AS, and Tolias AS (2015). Principles of connectivity among morphologically defined cell types in adult neocortex. _Science_, 350(6264), aac9462. [link](http://www.sciencemag.org/content/350/6264/aac9462.short) 
 1. Yatsenko D, Josic K, Ecker AS, Froudarakis E, Cotton RJ, and Tolias AS (2015). Improved estimation and interpretation of correlations in neural circuits. _PLoS Comput Biol_ 11(3): e1004083. doi:10.1371/journal.pcbi.1004083 [link](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004083)
 1. Erisken S, Vaiceliunaite A, Jurjut O, Fiorini M, Katzner S, and Busse, L (2014). Effects of Locomotion Extend throughout the Mouse Early Visual System. _Current Biology_, 24(24), 2899-2907.
