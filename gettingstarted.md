@@ -7,6 +7,8 @@ weight: 2
 
 # Before you start
 
+Check out the DataJoint[whitepaper]. (http://biorxiv.org/content/early/2015/11/14/031658)
+
 Make sure that you correctly [install DataJoint](/installation.md).
 
 # Define how you data is organized: Create a Schema
