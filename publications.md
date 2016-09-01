@@ -7,6 +7,7 @@ weight: 2
 
 The following publications used DataJoint for their data analysis. If you used datajoint and want your publication listed here, please either fork this site on github, add it, and send us a pull request, or submit an [issue](https://github.com/datajoint/datajoint.github.io/issues) for this [repo](https://github.com/datajoint/datajoint.github.io).
 
+1. Shan KQ, Lubenov EV, Papadopoulou M, and Siapas AG (2016). Spatial tuning and brain state account for dorsal hippocampal CA1 activity in a non-spatial learning task. _eLife_, 5, p.e14321.
 1. Baden T, Berens P, Franke K, Rezac M, Bethge M, and Euler T (2015). The functional diversity of retinal ganglion cells in the mouse.  _Nature_, 529(7586), pp.345-350. [link](http://www.nature.com/nature/journal/v529/n7586/abs/nature16468.html) 
 1. Cadwell CR, Palasantza A, Jiang X, Berens P, Deng Q, Reimer J, Tolias K, Bethge M, Tolias AS (2015).
 Morphological, electrophysiological and transcriptomic profiling of single neurons using Patch-seq.
