@@ -7,7 +7,7 @@ weight: 2
 
 # Before you start
 
-Make sure that you corretly [installed DataJoint](/installation.md).
+Make sure that you correctly [install DataJoint](/installation.md).
 
 # Define how you data is organized: Create a Schema
 
