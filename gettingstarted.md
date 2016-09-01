@@ -7,9 +7,7 @@ weight: 2
 
 # Before you start
 
-Make sure that you corretly [installed DataJoint](/installation.html).
-
-If you have never heard of databases before, take a quick look at [basic database concepts](/basicconcepts.html).
+Make sure that you correctly [install DataJoint](/installation.md).
 
 # Define how you data is organized: Create a Schema
 
