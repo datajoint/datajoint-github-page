@@ -6,6 +6,9 @@ weight: 0
 ---
 
 # In a hurry?
+
+*9/1/16 This month we are currently in the process of updating documentation for both MATLAB and Python*
+
 Download DataJoint for [MATLAB](http://datajoint.github.io/datajoint-matlab/) or [Python3](https://github.com/datajoint/datajoint-python).
 
 
