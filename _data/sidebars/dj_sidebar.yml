@@ -1,0 +1,63 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  product: DataJoint
+  version: 1.0
+  folders:
+
+  - title:
+    output: pdf
+    type: frontmatter
+    folderitems:
+    - title:
+      url: /titlepage
+      output: pdf
+      type: frontmatter
+    - title:
+      url: /tocpage
+      output: pdf
+      type: frontmatter
+
+  - title: Overview
+    output: web, pdf
+    folderitems:
+
+    - title: About
+      url: /index.html
+      output: web, pdf
+      type: homepage
+
+    - title: Introduction
+      url: /dj_about.html
+      output: web, pdf
+
+    - title: Citing
+      url: /dj_citing.html
+      output: web, pdf
+
+
+  - title: Release Notes
+    output: web, pdf
+    folderitems:
+
+    - title: 1.0 Release notes
+      url: /dj_release_notes_10.html
+      output: web, pdf
+
+
+  - title: Installation
+    output: web, pdf
+    folderitems:
+
+    - title: Prerequisites
+      url: /dj_prereqs.html
+      output: web, pdf
+
+    - title: Install Jekyll on Mac
+      url: /mydoc_install_jekyll_on_mac.html
+      output: web, pdf
+
+    - title: Install Jekyll on Windows
+      url: /mydoc_install_jekyll_on_windows.html
+      output: web, pdf
