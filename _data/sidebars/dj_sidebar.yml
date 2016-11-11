@@ -2,8 +2,8 @@
 
 entries:
 - title: sidebar
-  product: DataJoint
-  version: 1.0
+  product:
+  version:
   folders:
 
   - title:
@@ -23,7 +23,7 @@ entries:
     output: web, pdf
     folderitems:
 
-    - title: About
+    - title: About DataJoint
       url: /index.html
       output: web, pdf
       type: homepage
@@ -32,21 +32,38 @@ entries:
       url: /dj_about.html
       output: web, pdf
 
+    - title: WhitePaper
+      url: http://biorxiv.org/content/early/2015/11/14/031658
+      output: web, pdf
+      type: link
+
     - title: Citing
       url: /dj_citing.html
       output: web, pdf
 
 
-  - title: Release Notes
+  # - title: Release Notes
+  #   output: web, pdf
+  #   folderitems:
+  #
+  #   - title: 1.0 Release notes
+  #     url: /dj_release_notes_10.html
+  #     output: web, pdf
+
+  - title: Installation
     output: web, pdf
     folderitems:
 
-    - title: 1.0 Release notes
-      url: /dj_release_notes_10.html
+    - title: DataJoint for Python
+      url: /dj_python_install.html
+      output: web, pdf
+
+    - title: DataJoint for Matlab
+      url: /dj_matlab_install.html
       output: web, pdf
 
 
-  - title: Installation
+  - title: Getting Started
     output: web, pdf
     folderitems:
 
@@ -54,10 +71,54 @@ entries:
       url: /dj_prereqs.html
       output: web, pdf
 
-    - title: Install Jekyll on Mac
-      url: /mydoc_install_jekyll_on_mac.html
+    - title: Configuring the Connection
+      url: /dj_configure_conn.html
       output: web, pdf
 
-    - title: Install Jekyll on Windows
-      url: /mydoc_install_jekyll_on_windows.html
+    - title: A Simple Schema
+      url: /dj_configure_conn.html
+      output: web, pdf
+
+  - title: Documentation
+    output: web, pdf
+    folderitems:
+
+    - title: Tables
+      url: /dj_tables.html
+      output: web, pdf
+
+    - title: Relvars
+      url: /dj_base_relvar.html
+      output: web, pdf
+
+    - title: Relvar Operators
+      url: /dj_relvar_ops.html
+      output: web, pdf
+
+    - title: Working with Data
+      url: /dj_working_with_data.html
+      output: web, pdf
+
+    - title: Drawing Table Graph
+      url: /dj_drawing_erd.html
+      output: web, pdf
+
+    - title: Populating Tables
+      url: /dj_populating_tables.html
+      output: web, pdf
+
+    - title: Distributed Processing
+      url: /dj_distributed_processing.html
+      output: web, pdf
+
+  - title: Resources
+    output: web, pdf
+    folderitems:
+
+    - title: Frequent Questions
+      url: /dj_faq.html
+      output: web, pdf
+
+    - title: Configuring MySQL
+      url: /dj_mysql_config.html
       output: web, pdf

@@ -1,0 +1,61 @@
+
+
+entries:
+- title: sidebar
+  product: DataJoint
+  version: 
+  folders:
+
+
+  - title: Overview
+    output: web, pdf
+    folderitems:
+
+    - title: About DataJoint
+      url: /index.html
+      output: web, pdf
+      type: homepage
+
+    - title: Introduction
+      url: /dj_about.html
+      output: web, pdf
+
+    - title: WhitePaper
+      url: http://biorxiv.org/content/early/2015/11/14/031658
+      output: web, pdf
+      type: link
+
+    - title: Citing
+      url: /dj_citing.html
+      output: web, pdf
+
+
+  - title: Getting Started
+    output: web, pdf
+    folderitems:
+
+    - title: Install
+      url: /dj_python_install.html
+      output: web, pdf
+
+    - title: Quick Start
+      url: /dj_python_install.html
+      output: web, pdf
+
+    - title: Example Schema
+      url: /dj_python_install.html
+      output: web, pdf
+
+
+
+- title: Resources
+  output: web, pdf
+  folderitems:
+
+  - title: Frequent Questions
+    url: /dj_faq.html
+    output: web, pdf
+
+  - title: Configuring MySQL
+    url: /dj_mysql_config.html
+    output: web, pdf

@@ -10,9 +10,13 @@ topnav:
 topnav_dropdowns:
 - title: Topnav dropdowns
   folders:
-    - title: Datajoint Resources
+    - title: Datajoint Repositories
       folderitems:
-        - title: Github Repo
-          external_url: https://github.com/tomjohnson1492/documentation-theme-jekyll
-        - title: Jekyll on my blog
-          external_url: http://idratherbewriting.com/category-jekyll/
+        - title: Python
+          external_url: https://github.com/datajoint/datajoint-python
+
+        - title: Matlab
+          external_url: https://github.com/datajoint/datajoint-matlab
+
+        - title: Documentation (this site)
+          external_url: https://github.com/datajoint/datajoint.github.io
