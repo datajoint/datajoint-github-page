@@ -8,6 +8,8 @@ sidebar: dj_sidebar
 permalink: dj_citing.html
 folder: dj
 ---
+White Paper: http://biorxiv.org/content/early/2015/11/14/031658
+
 ```
 @article{yatsenko-datajoint-2015,
   author = {D. Yatsenko and J. Reimer and A. S. Ecker and E. Y. Walker and F. Sinz and P. Berens and A. Hoenselaar and R. J. Cotton and A. S. Siapas and A. S. Tolias},

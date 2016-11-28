@@ -28,14 +28,14 @@ entries:
       output: web, pdf
       type: homepage
 
-    - title: Introduction
-      url: /dj_about.html
-      output: web, pdf
+    # - title: Introduction
+    #   url: /dj_about.html
+    #   output: web, pdf
 
-    - title: WhitePaper
-      url: http://biorxiv.org/content/early/2015/11/14/031658
-      output: web, pdf
-      type: link
+    # - title: WhitePaper
+    #   url: http:\/\/biorxiv.org\/content\/early\/2015\/11\/14\/031658
+    #   output: web, pdf
+    #   type: link
 
     - title: Citing
       url: /dj_citing.html
