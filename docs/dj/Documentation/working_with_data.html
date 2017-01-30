@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Working with Data &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="prev" title="Tables" href="tables.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="working-with-data">
+<h1>Working with Data<a class="headerlink" href="#working-with-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inserting-data">
+<h2>Inserting data<a class="headerlink" href="#inserting-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="inserting-in-matlab">
+<h3>Inserting in Matlab<a class="headerlink" href="#inserting-in-matlab" title="Permalink to this headline">¶</a></h3>
+<p>One can insert tuples into tables from MATLAB scripts using the <cite>insert</cite> command of a <a class="reference internal" href="base_relvar.html#representing-table-relationships"><span class="std std-ref">base relvar</span></a>.</p>
+<p>For example, insert information about an animal from the MATLAB command line.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">insert</span><span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">Animal</span><span class="p">,</span> <span class="n">struct</span><span class="p">(</span><span class="c">...</span>
+    <span class="s">&#39;animal_id&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;date_of_birth&#39;</span><span class="p">,</span> <span class="s">&#39;2012-07-01&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;animal_notes&#39;</span><span class="p">,</span> <span class="s">&#39;test dummy&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>or insert multiple tuples</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">insert</span><span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">Animal</span><span class="p">,</span> <span class="n">cell2struct</span><span class="p">({</span>
+         <span class="mi">13</span>        <span class="s">&#39;2012-07-01&#39;</span>      <span class="s">&#39;M&#39;</span>   <span class="s">&#39;test dummy&#39;</span>
+         <span class="mi">14</span>        <span class="s">&#39;2012-07-02&#39;</span>      <span class="s">&#39;F&#39;</span>   <span class="s">&#39;another test&#39;</span>
+         <span class="mi">15</span>        <span class="s">&#39;2012-08-01&#39;</span>      <span class="s">&#39;M&#39;</span>   <span class="s">&#39;&#39;</span>
+<span class="p">}</span><span class="s">&#39;,  {&#39;</span><span class="n">animal_id</span><span class="o">&#39;</span>  <span class="s">&#39;date_of_birth&#39;</span>  <span class="s">&#39;sex&#39;</span>  <span class="s">&#39;animal_notes&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>For imported and computed tables, one should only insert data from the <cite>makeTuples</cite> callback as part of DataJoint&#8217;s standard process for populating computed data.</p>
+<p>See also</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="s">&#39;dj.BaseRelvar/insert&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-in-python">
+<h3>Inserting in Python<a class="headerlink" href="#inserting-in-python" title="Permalink to this headline">¶</a></h3>
+<p>The equivalent calls in Python would be</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">common</span><span class="o">.</span><span class="n">Animal</span><span class="o">.</span><span class="n">insert1</span><span class="p">(</span>
+              <span class="nb">dict</span><span class="p">(</span><span class="n">animal_id</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="o">=</span><span class="s1">&#39;2012-07-01&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="n">animal_notes</span><span class="o">=</span><span class="s1">&#39;test dummy&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>or insert multiple tuples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">common</span><span class="o">.</span><span class="n">Animal</span><span class="o">.</span><span class="n">insert</span><span class="p">([</span>
+      <span class="nb">dict</span><span class="p">(</span><span class="n">animal_id</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="o">=</span><span class="s1">&#39;2012-07-01&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="n">animal_notes</span><span class="o">=</span><span class="s1">&#39;test dummy&#39;</span><span class="p">)),</span>
+      <span class="nb">dict</span><span class="p">(</span><span class="n">animal_id</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="o">=</span><span class="s1">&#39;2012-07-02&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">animal_notes</span><span class="o">=</span><span class="s1">&#39;another test&#39;</span><span class="p">)),</span>
+      <span class="nb">dict</span><span class="p">(</span><span class="n">animal_id</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="o">=</span><span class="s1">&#39;2012-08-01&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="n">animal_notes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+      <span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="fetching-data">
+<h2>Fetching Data<a class="headerlink" href="#fetching-data" title="Permalink to this headline">¶</a></h2>
+<p>As discussed previously, <a class="reference internal" href="base_relvar.html#representing-table-relationships"><span class="std std-ref">base relvars</span></a> and derived relvars only represent the data in the database but do not themselves contain any of it. The <cite>fetch</cite> operators retrieve the data represented by relvars into the Matlab/Python workspace.</p>
+<p>The fetch operators always perform a relational [projection]( 2015-05-05-projection) and accept the same arguments as the projection of the corresponding relvar.</p>
+<div class="section" id="fetching-in-matlab">
+<h3>Fetching in Matlab<a class="headerlink" href="#fetching-in-matlab" title="Permalink to this headline">¶</a></h3>
+<p>For more details, see</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">doc</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span><span class="o">/</span><span class="n">pro</span>
+<span class="o">&gt;&gt;</span> <span class="n">doc</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span><span class="o">/</span><span class="n">fetch</span>
+<span class="o">&gt;&gt;</span> <span class="n">doc</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span><span class="o">/</span><span class="n">fetch1</span>
+<span class="o">&gt;&gt;</span> <span class="n">doc</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span><span class="o">/</span><span class="n">fetchn</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fetching-in-python">
+<h3>Fetching in Python<a class="headerlink" href="#fetching-in-python" title="Permalink to this headline">¶</a></h3>
+<p>DataJoint Relations in Python provide the member functions <cite>fetch1</cite> and <cite>fetch</cite>. These return numpy structured arrays by default, but can also return a list of dictionaries. Fetching into pandas DataFrames is planned, but not yet implemented.</p>
+</div>
+</div>
+<div class="section" id="deleting-data">
+<h2>Deleting data<a class="headerlink" href="#deleting-data" title="Permalink to this headline">¶</a></h2>
+<p>Deleting a set of tuples from a table will also recursively delete all corresponding tuples in all its <a class="reference internal" href="tables.html#foreign-keys"><span class="std std-ref">dependent tables</span></a>.</p>
+<p>To delete a subset of tuples, any kind of restriction can be applied to the base relvar before deleting. However, other operators such as <code class="docutils literal"><span class="pre">join</span></code> or <code class="docutils literal"><span class="pre">projection</span></code> will produce a relation that cannot be deleted.</p>
+<div class="section" id="matlab-delete-examples">
+<h3>Matlab Delete Examples<a class="headerlink" href="#matlab-delete-examples" title="Permalink to this headline">¶</a></h3>
+<p>To delete a selection of tuples from a [base relvar]( 2015-05-05-baserelvars), use the <cite>del</cite> command.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="c">% deleting an entire table</span>
+<span class="n">del</span><span class="p">(</span><span class="n">tp</span><span class="p">.</span><span class="n">Segmentation</span><span class="p">)</span>
+
+<span class="c">% deleting a subset of a table</span>
+<span class="n">del</span><span class="p">(</span><span class="n">tp</span><span class="p">.</span><span class="n">Segmentation</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">TpSession</span> <span class="o">&amp;</span> <span class="s">&#39;session_date &gt;= &quot;2013-01-01&quot;&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The second statement deletes all tuples from <cite>tp.Segmentation</cite> that match tuples from <cite>common.TpSession</cite> with <cite>session_date</cite> greater than <cite>2013-01-01</cite>. Or, in English, <code class="docutils literal"><span class="pre">delete</span> <span class="pre">all</span> <span class="pre">segmentations</span> <span class="pre">from</span> <span class="pre">two-photon</span> <span class="pre">sessions</span> <span class="pre">acquired</span> <span class="pre">since</span> <span class="pre">Jan</span> <span class="pre">1,</span> <span class="pre">2013</span></code>.</p>
+<p>Again, the delete will cascade to all the dependent tables.</p>
+<p>A summary of data to be deleted is displayed to the user before the delete is executed. Once committed, the deletion is permanent and cannot be undone.</p>
+<p>When precautions are unnecessary, a faster way to delete a selection of tuples from a table is the method <cite>delQuick</cite>. It is non-interactive and it does not cascade the delete down to dependent tables.</p>
+<p>See also</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">help</span> <span class="n">dj</span><span class="p">.</span><span class="n">BaseRelvar</span><span class="o">/</span><span class="n">del</span>
+<span class="n">help</span> <span class="n">dj</span><span class="p">.</span><span class="n">BaseRelvar</span><span class="o">/</span><span class="n">delQuick</span>
+</pre></div>
+</div>
+<p>Python Delete Examples</p>
+<p>To delete a selection of tuples from a [base relvar]( 2015-05-05-baserelvars), you can use the objects function <cite>delete</cite>. For example, if <cite>segm = tp.Segmentation()</cite>, then</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># deleting an entire table is carried out via the command</span>
+      <span class="n">segm</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+<span class="c1"># deleting a subset of a table (`sess = common.TpSession()`)</span>
+      <span class="p">(</span><span class="n">segm</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sess</span> <span class="o">&amp;</span> <span class="s1">&#39;session_date &gt;= &quot;2013-01-01&quot;&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The second statement deletes all tuples from <cite>segm</cite> that match tuples from <cite>sess</cite> with <cite>session_date</cite> greater than <cite>2013-01-01</cite>. Or, in English, <code class="docutils literal"><span class="pre">delete</span> <span class="pre">all</span> <span class="pre">segmentations</span> <span class="pre">from</span> <span class="pre">two-photon</span> <span class="pre">sessions</span> <span class="pre">acquired</span> <span class="pre">since</span> <span class="pre">Jan</span> <span class="pre">1,</span> <span class="pre">2013</span></code>.</p>
+<p>Again, the delete will cascade to all the dependent tables.</p>
+<p><strong>Warning:</strong> In contrast to Matlab, Python will only display a summary or ask you to confirm the delete if you set <cite>&#8220;safemode&#8221;: true</cite> in <cite>dj_local_conf.json</cite>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Working with Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inserting-data">Inserting data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fetching-data">Fetching Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-data">Deleting data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/working_with_data.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\working_with_data.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\working_with_data.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/working_with_data.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,1 +1,4 @@
-_site/*
+_build/
+.idea/
+.DS_Store
+dj_old

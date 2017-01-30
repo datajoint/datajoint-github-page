@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DataJoint Documentation &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../index.html" />
+    <link rel="next" title="Google Sheets Lookup" href="Documentation/advanced/google_sheets_lookup.html" />
+    <link rel="prev" title="Prerequisites" href="GettingStarted/prereqs.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datajoint-documentation">
+<h1>DataJoint Documentation<a class="headerlink" href="#datajoint-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/base_relvar.html">Representing Table Relationships</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/base_relvar.html#whats-a-base-relvar">What’s a base relvar?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/base_relvar.html#matlab-examples">Matlab Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/base_relvar.html#defining-schema">Defining Schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/computed_tables.html">Computed Tables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#creating-a-computed-table">Creating a computed table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#matlab-computed-tables">Matlab computed tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#python-computed-tables">Python computed tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#populating-a-table">Populating a table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#matlab-populate">Matlab populate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#python-populate">Python populate</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#determining-the-populate-relations">Determining the populate relations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#matlab-populate-relation">Matlab populate relation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#python-populate-relation">Python populate relation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#defining-maketuples">Defining makeTuples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#subtables">Subtables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#matlab-subtable-example">Matlab subtable example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/computed_tables.html#python-subtable-example">Python subtable example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html#transaction-processing">Transaction processing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/distributed_processing.html">Distributed Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/distributed_processing.html#executing-multiple-make-tuples">Executing multiple Make Tuples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/distributed_processing.html#using-gnu-parallel">Using GNU Parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/entity_relationship_diagram.html">Entitity Relationship Diagram</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/entity_relationship_diagram.html#erd-in-matlab">ERD in Matlab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/entity_relationship_diagram.html#erd-examples">ERD Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/glossary.html">Glossary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#tuples">Tuples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#relations">Relations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#relvars">Relvars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#matching-tuples">Matching tuples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#primary-key">Primary key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html#foreign-key">Foreign key</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/relvar_ops.html">Relvar Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/relvar_ops.html#join">Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/relvar_ops.html#projection">Projection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#id1">project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#id2">rename</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#id3">extend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#id4">aggregate</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/relvar_ops.html#restriction">Restriction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#restriction-by-another-relvar">Restriction by another relvar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#restriction-by-a-structure-array">Restriction by a structure array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#restriction-by-a-string-condition">Restriction by a string condition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/relvar_ops.html#restriction-by-a-union-of-conditions">Restriction by a union of conditions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/relvar_ops.html#op-execution-speed">Op Execution Speed</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/tables.html">Tables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#table-types">Table Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#declaring-tables">Declaring Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#primary-keys">Primary keys</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#what-s-a-primary-key">What&#8217;s a primary key?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#datatypes-in-primary-keys">Datatypes in primary keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#natural-primary-keys">Natural primary keys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#foreign-keys">Foreign keys</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#what-is-a-foreign-key">What is a Foreign Key?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Documentation/tables.html#matlab-foreign-key-example">Matlab Foreign Key Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Documentation/tables.html#python-foreign-key-example">Python Foreign Key Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#attributes">Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#secondary-indices">secondary indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#dropping-tables">Dropping tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#matlab-dropping">Matlab dropping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#python-dropping">Python dropping</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#modifying-tables">Modifying Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#modifying-in-matlab">Modifying in Matlab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/tables.html#modifying-in-python">Modifying in Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html#more-reading">More reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/working_with_data.html">Working with Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/working_with_data.html#inserting-data">Inserting data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/working_with_data.html#inserting-in-matlab">Inserting in Matlab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/working_with_data.html#inserting-in-python">Inserting in Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/working_with_data.html#fetching-data">Fetching Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/working_with_data.html#fetching-in-matlab">Fetching in Matlab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/working_with_data.html#fetching-in-python">Fetching in Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/working_with_data.html#deleting-data">Deleting data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Documentation/working_with_data.html#matlab-delete-examples">Matlab Delete Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DataJoint Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/tables.html">Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Documentation/working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../_sources/dj/documentation.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\documentation.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\documentation.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/dj/documentation.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

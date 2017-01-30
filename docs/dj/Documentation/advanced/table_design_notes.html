@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Structuring Data &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../../documentation.html" />
+    <link rel="next" title="Representing Table Relationships" href="../base_relvar.html" />
+    <link rel="prev" title="Google Sheets Lookup" href="google_sheets_lookup.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="structuring-data">
+<h1>Structuring Data<a class="headerlink" href="#structuring-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hierarchical-dependencies">
+<h2>Hierarchical dependencies<a class="headerlink" href="#hierarchical-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>In his <a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.1845&amp;rep=rep1&amp;type=pdf">original paper</a> introducing the relational data model, <a class="reference external" href="http://en.wikipedia.org/wiki/Edgar_F._Codd">E.F.Codd</a> proposed a simple scheme for <a class="reference external" href="http://code.google.com/p/datajoint/wiki/DataDefinition">normalizing</a> hierarchical data into the relational model:</p>
+<p>&gt; Starting with the relation at the top of the tree, take its primary key and expand each of the immediately subordinate relations by inserting this primary key domain or domain combination. The primary key of each expanded relation consists of the primary key before expansion augmented by the primary key copied down from the parent relation. Now, strike out from the parent relation all nonsimple domains, remove the top node of the tree, and repeat the same sequence of operations on each remaining subtree.</p>
+<p>DataJoint naturally encourages this approach to the normalization of hierarchical dependencies. When a foreign key is added to the table declaration, the primary key fields of the referenced table are copied with the same names.  If the reference is added above the divider <code class="docutils literal"><span class="pre">---</span></code>, the inherited primary key fields are added to the primary key, in which case they will be propagated further down the hierarchy. This allows relating data across the hierarchy very easily: the primary key value from one table will match precisely all the matching data from any other table in the hierarchy without traversing data paths.</p>
+</div>
+<div class="section" id="normalization">
+<h2>normalization<a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h2>
+<p>This section reviews a few basic rules for relational data design.</p>
+<div class="section" id="atomize-attributes">
+<h3>Atomize attributes<a class="headerlink" href="#atomize-attributes" title="Permalink to this headline">¶</a></h3>
+<p>A new programmer may be tempted to declare a few  [datatype blob](/datatypes/) attributes and stuff complex MATLAB structures into each attribute value.  To allow precise and efficient queries, structured values must be broken up into separate columns possibly across multiple tables.  Some large and complex  objects such as images or traces that are always manipulated atomically, should be kept together in a single field.  In summary, if you plan to search by the value of an attribute or retrieve it separately from other attributes, it needs its own column.</p>
+</div>
+<div class="section" id="normalize-tables">
+<h3>Normalize tables<a class="headerlink" href="#normalize-tables" title="Permalink to this headline">¶</a></h3>
+<p>Before learning the relational model, most programmers tend to lump too many things in one table similar to working with spreadsheets.  Relations are not spreadsheets.  <a class="reference external" href="http://en.wikipedia.org/wiki/Database_normalization">Database normalization</a> is the systematic process of dividing tables into separate simpler tables until they meet formal sets of criteria known as <a class="reference external" href="http://en.wikipedia.org/wiki/Database_normalization">Normal Forms</a>. Properly normalized tables store all information exactly once and relate it precisely to other information, precluding many anomalies arising in data manipulations.</p>
+<p>The normal forms have been humorously summed up by this solemn oath:  &#8220;Every attribute in a table must relate a fact about the primary key, the whole key, and nothing but the key &#8212; so help me <a class="reference external" href="http://en.wikipedia.org/wiki/Edgar_F._Codd">Codd</a>&#8221;.</p>
+<blockquote>
+<div>If some attributes are not directly associated with the entire [primary key](/2015-05-05-primarykeys), they must reside in a different table with a different primary key.</div></blockquote>
+<p>Here are a few common signs indicating that a table may need to be split:</p>
+<ul class="simple">
+<li>The same data needs to be entered or updated in more than one place, possibly in different forms.  This indicates that the duplicated data must be moved to their separate table and referred to by other tables.</li>
+<li>Some attributes do not apply to all tuples in a table.  Your table appears to contain different kinds of facts, which is not allowed in a normalized design. You will need to split this table into two with different sets of attributes.</li>
+</ul>
+<p>DataJoint by design encourages well normalized data. As you design your first tables, you will gain intuition as to which columns belong together in the same table. If you are more curious, for extra credit, review the first three normal forms applicable to DataJoint:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/First_normal_form">first normal form</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Second_normal_form">second normal form</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Third_normal_form">third normal form</a></li>
+</ul>
+<p>Table design, including the choice of the primary keys and the specification of foreign keys, effectively communicates and enforces the rules and the structure of your data.  As rules change, you can change the structure of your schema or design a new schema altogether and migrate your old data there.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About DataJoint</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">DataJoint Documentation</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../../_sources/dj/Documentation/advanced/table_design_notes.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\advanced\table_design_notes.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\advanced\table_design_notes.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../../_sources/dj/Documentation/advanced/table_design_notes.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

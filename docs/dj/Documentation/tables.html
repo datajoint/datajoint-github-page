@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tables &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Working with Data" href="working_with_data.html" />
+    <link rel="prev" title="Relvar Operations" href="relvar_ops.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tables">
+<h1>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="table-types">
+<h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<p>Every table in a DataJoint schema is assigned one of the four tiers: <cite>lookup</cite>, <cite>manual</cite>, <cite>imported</cite>, or <cite>computed</cite>.  The tier helps establish the basic role of the data in the table and how valuable (difficult to replace) these data are. In Python, the tier is specified by inheriting from <cite>dj.Manual</cite>, <cite>dj.Computed</cite>, <cite>dj.Lookup</cite>, or <cite>dj.Imported</cite>. Additionally, one can mix in inheritance from <cite>dj.Subordinate</cite> to indicate that the table is a subtable.</p>
+<p><strong>Lookup</strong> tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up. An example for using google spreadsheets ax an external lookup table can be found <a class="reference internal" href="advanced/google_sheets_lookup.html#google-sheets-lookup"><span class="std std-ref">here</span></a>.</p>
+<p><strong>Manual</strong> tables contain information about experiments that are entered manually or by other software outside of the DataJoint processing chain. Due to their high value and small size, manual tables are backed up most frequently (e.g. everyday or after every experiment).</p>
+<p><strong>Imported</strong> tables contain information that is computed automatically by the DataJoint processing chain but requires access to external files outside the database (e.g. raw recordings). Raw recordings are typically in large files that cannot be kept online indefinitely. Once the extraction algorithms have stabilized and the extracted data have been imported into the database, the raw recordings may be taken offline. Imported tables need to be backed up regularly, especially after the raw data files have been taken offline.</p>
+<p><strong>Computed</strong> tables are populated automatically with data obtained from other tables within the database. Computed tables do not typically need to be backed up at all unless the computation time far exceeds the effort of restoring from backups.</p>
+</div>
+<div class="section" id="declaring-tables">
+<h2>Declaring Tables<a class="headerlink" href="#declaring-tables" title="Permalink to this headline">¶</a></h2>
+<p>The part that defines the structure of the table is the at the top of the files in Matlab and the class variables <cite>definition</cite> in Python. The syntax is the same in both cases. Let&#8217;s look at it in more detail.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>subject_id                   : int                     <span class="c1"># id number</span>
+---
+<span class="nv">first</span><span class="o">=</span><span class="s2">&quot;&quot;</span>                     : varchar<span class="o">(</span><span class="m">20</span><span class="o">)</span>             <span class="c1"># first name</span>
+<span class="nv">last</span><span class="o">=</span><span class="s2">&quot;&quot;</span>                      : varchar<span class="o">(</span><span class="m">20</span><span class="o">)</span>             <span class="c1"># last name</span>
+<span class="nv">sex</span><span class="o">=</span><span class="s2">&quot;unknown&quot;</span>                : enum<span class="o">(</span><span class="s1">&#39;M&#39;</span>,<span class="s1">&#39;F&#39;</span>,<span class="s1">&#39;unknown&#39;</span><span class="o">)</span> <span class="c1"># animal&#39;s sex</span>
+<span class="nv">subject_ts</span><span class="o">=</span>CURRENT_TIMESTAMP : timestamp               <span class="c1"># automatic</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><strong>comments and empty</strong> Everything after a <cite>#</cite> is ignored. Empty lines are ignored as well.</li>
+<li><strong>table identity</strong> Table identity is defined differently in Matlab and Python.</li>
+</ul>
+<p>In Matlab, the first non-blank line identifies the table as follows:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">package</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="n">TableName</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&lt;</span><span class="n">tier</span><span class="o">&gt;</span><span class="p">)</span>   # <span class="n">comment</span> <span class="n">about</span> <span class="n">the</span> <span class="n">table</span>
+</pre></div>
+</div>
+<p><cite>&lt;package&gt;</cite> denotes the name of the package in Matlab. <cite>&lt;TableName&gt;</cite> must match the name of the class. <cite>&lt;tier&gt;</cite> can be one of the following: <cite>lookup</cite>, <cite>manual</cite>, <cite>imported</cite>, or <cite>computed</cite>.</p>
+<p>In Python, the table name is defined via the class name and the tier is defined by what this class inherits from (<cite>dj.Manual</cite>, <cite>dj.Computed</cite>, <cite>dj.Lookup</cite>, <cite>dj.Imported</cite>). That leaves only the comment to be specified by the first line in the table definition</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nd">@schema</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="n">dj</span><span class="o">.</span><span class="n">tier</span><span class="p">):</span>
+        <span class="n">definition</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        # comment about the table</span>
+<span class="s2">        ...</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>The rest of the declaration defines table attributes. The declaration is separated into two parts separated by a line that starts with at least three minuses dashes <code class="docutils literal"><span class="pre">---</span></code>. Below we cover:</p>
+<ul class="simple">
+<li>Primary keys</li>
+<li>Foreign keys</li>
+<li>attributes</li>
+<li>indexes</li>
+</ul>
+</div>
+<div class="section" id="primary-keys">
+<h2>Primary keys<a class="headerlink" href="#primary-keys" title="Permalink to this headline">¶</a></h2>
+<p>All attributes above the separator make up the primary key. Primary keys uniquely identify a row (tuple) in a table. There can be no two tuples with the same set of primary key values in a table.</p>
+<div class="section" id="what-s-a-primary-key">
+<h3>What&#8217;s a primary key?<a class="headerlink" href="#what-s-a-primary-key" title="Permalink to this headline">¶</a></h3>
+<p>Each table must have exactly one [primary key](<a class="reference external" href="http://en.wikipedia.org/wiki/Primary_key">http://en.wikipedia.org/wiki/Primary_key</a>): a subset of its attributes that uniquely identify each tuple in the table.  The database uses the primary key to prevent duplicate entries, to relate data across tables, and to accelerate data queries. The choice of the primary key will determine how you identify tuples. Therefore, make the primary key <strong>short</strong>, <strong>expressive</strong>, and <strong>persistent</strong>.
+For example, mice in our lab are assigned unique IDs. The mouse ID number of type <cite>smallint</cite> can serve as the primary key for the table <cite>Mice</cite>.</p>
+</div>
+<div class="section" id="datatypes-in-primary-keys">
+<h3>Datatypes in primary keys<a class="headerlink" href="#datatypes-in-primary-keys" title="Permalink to this headline">¶</a></h3>
+<p>All integer types, dates, and timestamps make good primary key attributes. String (<cite>char</cite> and <cite>varchar</cite>) are less common because they can be quite long and because they may have invisible trailing spaces. Floating-point numbers should be avoided because rounding errors may lead to logical errors. Enums are okay as long as they do not need to be modified later when [[foreign keys]] are already created referencing the table. Finally, dataJoint does not support blob types in primary keys.</p>
+<p>The primary key may be composite, i.e. comprising several attributes. In DataJoint, hierarchical designs often produce tables whose primary keys comprise many attributes.</p>
+</div>
+<div class="section" id="natural-primary-keys">
+<h3>Natural primary keys<a class="headerlink" href="#natural-primary-keys" title="Permalink to this headline">¶</a></h3>
+<p>A primary key comprising real-world attributes is a [natural primary key](<a class="reference external" href="http://en.wikipedia.org/wiki/Natural_key">http://en.wikipedia.org/wiki/Natural_key</a>). Natural primary keys are a good choice when such real-world attributes are already properly assigned and their permanence is ensured.  If no convenient natural key exists, you may choose to introduce a [surrogate primary key](<a class="reference external" href="http://en.wikipedia.org/wiki/Surrogate_key">http://en.wikipedia.org/wiki/Surrogate_key</a>), i.e. an artificial attribute whose purpose is to uniquely identify tuples in a table.  An institutional process must ensure the uniqueness and permanence of a surrogate key. For example, the U.S. government assigns every worker a surrogate attribute, the social security number (SSN), but the government must go to great lengths to ensure that this primary key is assigned exactly once by checking against other less convenient candidate keys (i.e. the combination of name, parents&#8217; names, date of birth, place of birth, etc.)  Just like the SSN, well managed surrogate keys tend to get institutionalized and, overtime, become natural.</p>
+</div>
+</div>
+<div class="section" id="foreign-keys">
+<h2>Foreign keys<a class="headerlink" href="#foreign-keys" title="Permalink to this headline">¶</a></h2>
+<p>In many cases, you want to introduce a dependency on entries in other tables. For example, a trial is associated with a unique subject. This kind of relation is expressed with foreign keys.</p>
+<div class="section" id="what-is-a-foreign-key">
+<h3>What is a Foreign Key?<a class="headerlink" href="#what-is-a-foreign-key" title="Permalink to this headline">¶</a></h3>
+<p>A [foreign key](<a class="reference external" href="http://en.wikipedia.org/wiki/Foreign_key">http://en.wikipedia.org/wiki/Foreign_key</a> foreign key) is a referential constraint which precludes the existence of a tuple in one table (dependent table) without there existing the matching tuple in a another (referenced) table.</p>
+<p>They are declared by including the line``-&gt; &lt;package&gt;.&lt;AnotherBaseRelvar&gt;`` in matlab, and In Python, we indicate foreign keys by <code class="docutils literal"><span class="pre">-&gt;</span> <span class="pre">AnotherBaseRelvar</span></code> in python. where <code class="docutils literal"><span class="pre">`package.AnotherBaseRelvar</span></code> is the base <em>relvar</em> class name of the referenced table.</p>
+<p>A foreign key can act as part of a primary key. For example in the <code class="docutils literal"><span class="pre">Trials</span></code> class, we define the foreign key <code class="docutils literal"><span class="pre">subj.Subjects</span></code>. However, we also need another primary key to allow for several trials. If the primary keys were just the foreign key, we could only have one trial per subject.</p>
+<p>Foreign keys create a dependency hierarchy which is reflected by the <em>entity relationship diagram</em>.</p>
+<p>Adding a foreign key has the following effects. Consider the two Session and Scan Tables, where a scan is associated with a particular session.:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The primary key attributes of the referenced table are added to the declaration of the dependent table. For example, the primary key of <cite>common.TpScan</cite> in our example will become <cite>(animal_id,tp_session,scan_idx)</cite>.</li>
+<li>It will no longer be possible to enter data into <cite>common.TpScan</cite> before entering entries into <cite>common.TpSession</cite> with identical values of <cite>(animal_id,tp_session)</cite>.</li>
+<li>[Deleting data](2015-05-05-deletingdata) from <cite>common.TpSession</cite> will also delete all matching data from <cite>common.TpScan</cite>.</li>
+<li>[Dropping table](post_url 2015-05-05-droppingtables) <cite>common.TpSession</cite> will also drop table <cite>common.TpScan</cite>.</li>
+</ul>
+</div></blockquote>
+<p>To enforce referential integrity, DataJoint does not provide the ability to updates individual field values in an existing tuple: To change the value of a tuple, one must be delete it first and then insert it again, allowing the database to check and enforce the referential constraints.</p>
+<div class="section" id="matlab-foreign-key-example">
+<h4>Matlab Foreign Key Example<a class="headerlink" href="#matlab-foreign-key-example" title="Permalink to this headline">¶</a></h4>
+<p>For example, table [<cite>common.TpScan</cite>](<a class="reference external" href="http://github.com/atlab/commons/blob/master/schemas/+common/TpScan.m">http://github.com/atlab/commons/blob/master/schemas/+common/TpScan.m</a>) references table [<cite>common.TpSession</cite>](<a class="reference external" href="http://github.com/atlab/commons/blob/master/schemas/+common/TpSession.m">http://github.com/atlab/commons/blob/master/schemas/+common/TpSession.m</a>).</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="cm">%{</span>
+<span class="cm">common.TpScan (manual) # scanimage scan info</span>
+<span class="cm">-&gt;common.TpSession</span>
+<span class="cm">scan_idx : smallint # scanimage-generated sequential number</span>
+<span class="cm">-----</span>
+<span class="cm">surfz               : float   # (um) z-coord at pial surface</span>
+<span class="cm">depth=0             : int     # manual depth measurement</span>
+<span class="cm">laser_wavelength    : float # (nm)</span>
+<span class="cm">laser_power         : float # (mW) to brain</span>
+<span class="cm">cortical_area=&quot;V1&quot;  : enum(&#39;other&#39;,&#39;unknown&#39;,&#39;V1&#39;,&#39;LM&#39;,&#39;AL&#39;,&#39;PM&#39;) # Location of scan</span>
+<span class="cm">scan_notes = &quot;&quot;     : varchar(4095)  #  free-notes</span>
+<span class="cm">scan_ts = CURRENT_TIMESTAMP : timestamp   # don&#39;t edit</span>
+<span class="cm">%}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-foreign-key-example">
+<h4>Python Foreign Key Example<a class="headerlink" href="#python-foreign-key-example" title="Permalink to this headline">¶</a></h4>
+<p>The equivalent definition in python would look like</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">where_TpSession_lives</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="n">dj</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="s1">&#39;common&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+
+<span class="nd">@schema</span>
+<span class="k">class</span> <span class="nc">TpScan</span><span class="p">(</span><span class="n">dj</span><span class="o">.</span><span class="n">Manual</span><span class="p">):</span>
+
+      <span class="n">definition</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">      # scanimage scan info</span>
+
+<span class="s2">      -&gt;where_TpSession_lives.TpSession</span>
+<span class="s2">      scan_idx : smallint # scanimage-generated sequential number</span>
+
+<span class="s2">      -----</span>
+
+<span class="s2">      surfz               : float   # (um) z-coord at pial surface</span>
+<span class="s2">      depth=0             : int     # manual depth measurement</span>
+<span class="s2">      laser_wavelength    : float # (nm)</span>
+<span class="s2">      laser_power         : float # (mW) to brain</span>
+<span class="s2">      cortical_area=&quot;V1&quot;  : enum(&#39;other&#39;,&#39;unknown&#39;,&#39;V1&#39;,&#39;LM&#39;,&#39;AL&#39;,&#39;PM&#39;) # Location of scan</span>
+<span class="s2">      scan_notes = &quot;&quot;     : varchar(4095)  #  free-notes</span>
+<span class="s2">      scan_ts = CURRENT_TIMESTAMP : timestamp   # don&#39;t edit</span>
+
+<span class="s2">      &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>You can use whatever name the relation class has in the local context. For instance, you could import a class called <cite>Animals</cite> from another schema via <cite>from my_other_schema import Animals as LabAnimals</cite> and then refer to it in the table definition as <cite>-&gt;LabAnimals</cite>. This approach is quite powerful and gives the user a lot of freedom how to define and group schemata.</p>
+<p>Note that the foreign key is specified by the <em>local name</em> of the other table. If <cite>common.TpSession</cite> had been imported via <cite>from where_TpSession_lives import TpSession as peter</cite>, you would define the foreign key as <cite>-&gt;peter</cite>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<p>The attributes below the line define regular subordinate attributes. They are specified via:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">attribute_name</span>  <span class="p">:</span>  <span class="n">datatype</span>   # <span class="n">comment</span>
+<span class="n">attribute_name</span> <span class="p">=</span> <span class="n">default</span> <span class="p">:</span> <span class="n">datatype</span>  # <span class="n">with</span> <span class="n">a</span> <span class="n">default</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>the attribute name must start with a lowercase letter and contain only lowercase letters, digits, and underscores.</p>
+<p><cite>datatype</cite> is a MySQL datatype. Supported datatypes can be found [here](/datatypes/).</p>
+<p>When the default value is provided, tuples may be inserted without specifying that attribute and the default value will be inserted.  String values and enum values must be enclosed in double quotes <cite>&#8220;&#8221;</cite>.</p>
+<p>When the special value of <cite>null</cite> is specified as the default, the the attribute is specified as _nullable_. If a tuple is inserted without specifying that field, the value will be missing.  For string attributes, instead of specifying null, consider defaulting to <cite>&#8220;&#8221;</cite>.  An empty string and null are two different things but empty strings are usually easier to work with. Primary key fields cannot be nullable.</p>
+<p>The special value <cite>CURRENT_TIMESTAMP</cite> can be used as the default of <cite>timestamp</cite> fields, which is commonly used to timestamp the data.</p>
+</div>
+<div class="section" id="secondary-indices">
+<h2>secondary indices<a class="headerlink" href="#secondary-indices" title="Permalink to this headline">¶</a></h2>
+<p>You can add secondary (unique) indices to the end of your table declaration:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">+++</span>
+<span class="n">INDEX</span><span class="p">(</span><span class="n">attribute1</span><span class="p">)</span>
+<span class="n">INDEX</span><span class="p">(</span><span class="n">attribute1</span><span class="p">,</span><span class="n">attribute2</span><span class="p">,</span><span class="n">attribute3</span><span class="p">)</span>
+<span class="n">UNIQUE</span> <span class="n">INDEX</span><span class="p">(</span><span class="n">attribute1</span><span class="p">)</span>
+<span class="n">UNIQUE</span> <span class="n">INDEX</span><span class="p">(</span><span class="n">attribute1</span><span class="p">,</span><span class="n">attribute2</span><span class="p">,</span><span class="n">attribute3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dropping-tables">
+<h2>Dropping tables<a class="headerlink" href="#dropping-tables" title="Permalink to this headline">¶</a></h2>
+<p>To <em>drop a table</em> means to remove the table from the database and all its dependent tables recursively with all their contents without removing its MATLAB class definition files. If there are any data in the tables to be dropped, DataJoint will report the total number of tuples and will prompt for an additional confirmation before dropping.</p>
+<p>Dropping tables is often necessary when the table definition needs to be significantly modified or when the table is no longer necessary. Remember that the table will be created again automatically upon the next instantiation of its base relvar class, so if you want to ensure that the table never comes back, delete its class definition file as well.</p>
+<div class="section" id="matlab-dropping">
+<h3>Matlab dropping<a class="headerlink" href="#matlab-dropping" title="Permalink to this headline">¶</a></h3>
+<p>All [base relvars](2015-05-05-baserelvars) have the constant property <strong>table</strong> of type <strong>dj.Table</strong>, which provides access to the table definition.</p>
+<p>For example, to drop the table of the class <cite>tp.Segmentation</cite></p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">tp</span><span class="p">.</span><span class="n">Segmentation</span><span class="p">.</span><span class="n">table</span><span class="p">.</span><span class="n">drop</span>
+</pre></div>
+</div>
+<p>See also</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">help</span> <span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">drop</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-dropping">
+<h3>Python dropping<a class="headerlink" href="#python-dropping" title="Permalink to this headline">¶</a></h3>
+<p>In Python, the equivalent call would be</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tp</span><span class="o">.</span><span class="n">Segmentation</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This call will drop the table and all tables that reference it, recursively. If you only want to drop one table, without dropping the referencing tables (not recommended!), you can use</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tp</span><span class="o">.</span><span class="n">Segmentation</span><span class="o">.</span><span class="n">drop_quick</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that the classes that refer to the table can still exist after dropping a table. If you try to create a new instance from it, an error will be raised.</p>
+</div>
+</div>
+<div class="section" id="modifying-tables">
+<h2>Modifying Tables<a class="headerlink" href="#modifying-tables" title="Permalink to this headline">¶</a></h2>
+<p>Once a table has been declared and populated, it is still possible to change the structure of the table and its foreign keys. These changes are accomplished by the following methods:</p>
+<div class="section" id="modifying-in-matlab">
+<h3>Modifying in Matlab<a class="headerlink" href="#modifying-in-matlab" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">addAttribute</span>
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">alterAttribute</span>
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">dropAttribute</span>
+
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">addForeignKey</span>
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">dropForeignKey</span>
+
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">addIndex</span>
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">dropIndex</span>
+
+<span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">setTableComment</span>
+</pre></div>
+</div>
+<p>For example, change the definition of the existing field <cite>nframes</cite> in table <cite>tp.Align</cite></p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">tp</span><span class="p">.</span><span class="n">Align</span><span class="p">.</span><span class="n">table</span><span class="p">.</span><span class="n">alterAttribute</span><span class="p">(</span><span class="s">&#39;nframes&#39;</span><span class="p">,</span> <span class="s">&#39;nframes: smallint  # total number of frames&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each of these functions will request user confirmation before automatically updating the table declaration in the class file.</p>
+</div>
+<div class="section" id="modifying-in-python">
+<h3>Modifying in Python<a class="headerlink" href="#modifying-in-python" title="Permalink to this headline">¶</a></h3>
+<p>In Python these functions are not provided at the moment,  but we are working on it ...</p>
+</div>
+</div>
+<div class="section" id="more-reading">
+<h2>More reading<a class="headerlink" href="#more-reading" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="advanced/table_design_notes.html#structuring-data"><span class="std std-ref">structuring data</span></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#declaring-tables">Declaring Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#primary-keys">Primary keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#foreign-keys">Foreign keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attributes">Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secondary-indices">secondary indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dropping-tables">Dropping tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-tables">Modifying Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-reading">More reading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/tables.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\tables.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\tables.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/tables.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

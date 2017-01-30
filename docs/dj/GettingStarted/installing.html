@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing DataJoint &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="Getting Started" href="../getting_started.html" />
+    <link rel="next" title="Prerequisites" href="prereqs.html" />
+    <link rel="prev" title="Configuring a Connection" href="configure_conn.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-datajoint">
+<h1>Installing DataJoint<a class="headerlink" href="#installing-datajoint" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="installing-datajoint-for-matlab">
+<h2>Installing DataJoint for Matlab<a class="headerlink" href="#installing-datajoint-for-matlab" title="Permalink to this headline">¶</a></h2>
+<p>How do I install the Matlab DataJoint library?</p>
+<div class="section" id="matlab-specific-prerequirements">
+<h3>Matlab specific prerequirements<a class="headerlink" href="#matlab-specific-prerequirements" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>MATLAB R2011a or higher.  Earlier versions can be used with a few modifications.</li>
+<li><a class="reference external" href="https://github.com/datajoint/mym">mYm library</a> used as the low-level MySQL API.  The original project is at <a class="reference external" href="http://sourceforge.net/projects/mym/">sourceforge</a> and at <a class="reference external" href="http://www.mathworks.com/matlabcentral/linkexchange/links/1313-mysql-connector-mym">Matlab Central</a>.</li>
+</ul>
+</div>
+<div class="section" id="matlab-install-steps">
+<h3>Matlab install steps<a class="headerlink" href="#matlab-install-steps" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Download the <a class="reference external" href="https://github.com/datajoint/datajoint-matlab/releases">latest matlab release</a> of datajoint and unzip it.</li>
+<li>Place the unzipped folder somewhere where it won&#8217;t be deleted.</li>
+<li>Edit <a class="reference external" href="http://www.mathworks.com/help/matlab/ref/startup.html">startup.m</a> to add the datajoint directory to the search path and execute <cite>&lt;datajoint-path&gt;/mym/mySetup.m</cite>.</li>
+</ol>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="c">% startup.m</span>
+<span class="n">addpath</span> <span class="o">&lt;</span><span class="n">datajoint</span> <span class="n">path</span><span class="o">&gt;</span>
+<span class="n">run</span> <span class="o">&lt;</span><span class="n">datajoint</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;/</span><span class="n">mym</span><span class="o">/</span><span class="n">mymSetup</span>
+</pre></div>
+</div>
+<p>At the MATLAB command prompt, test that DataJoint and mym are on your path:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">mym</span> <span class="n">version</span>
+<span class="n">mYm</span> <span class="n">version</span> <span class="mf">2.6</span><span class="p">.</span><span class="mi">8</span>
+<span class="o">&gt;&gt;</span> <span class="n">which</span> <span class="n">dj</span><span class="p">.</span><span class="n">conn</span>
+<span class="o">/&lt;</span><span class="n">datajoint</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;/+</span><span class="n">dj</span><span class="o">/</span><span class="n">conn</span><span class="p">.</span><span class="n">m</span>
+</pre></div>
+</div>
+<p>To use DataJoint you need access to a MySQL server. See <a class="reference internal" href="configure_conn.html#configuring-a-connection"><span class="std std-ref">Configuring a Connection</span></a>.</p>
+</div>
+</div>
+<div class="section" id="installing-datajoint-for-python">
+<h2>Installing DataJoint for Python<a class="headerlink" href="#installing-datajoint-for-python" title="Permalink to this headline">¶</a></h2>
+<p>&#8220;How do I install the Python DataJoint library?&#8221;</p>
+<div class="section" id="python-specific-prerequirements">
+<h3>Python specific prerequirements<a class="headerlink" href="#python-specific-prerequirements" title="Permalink to this headline">¶</a></h3>
+<p>DataJoint is written for python 3.4. For Mac OS X and Windows users, we recommend the <a class="reference external" href="http://continuum.io/downloads">anaconda</a> distribution.</p>
+<p>Additionally, you will need the following libraries</p>
+<ul class="simple">
+<li>numpy</li>
+<li>pymysql</li>
+<li>matplotlib</li>
+<li>json</li>
+<li>pandas</li>
+<li>networkx</li>
+</ul>
+</div>
+<div class="section" id="python-install-steps">
+<h3>Python Install Steps<a class="headerlink" href="#python-install-steps" title="Permalink to this headline">¶</a></h3>
+<p>Run</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install git+https://github.com/datajoint/datajoint-python
+</pre></div>
+</div>
+<p>Alternatively,</p>
+<ol class="arabic simple">
+<li>Download the <a class="reference external" href="https://github.com/datajoint/datajoint-python/releases">latest release</a> of datajoint and unzip it.</li>
+<li><code class="docutils literal"><span class="pre">CD</span></code> into the folder and run</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py install
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configure_conn.html">Configuring a Connection</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing DataJoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-datajoint-for-matlab">Installing DataJoint for Matlab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-datajoint-for-python">Installing DataJoint for Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="prereqs.html">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/GettingStarted/installing.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\GettingStarted\installing.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\GettingStarted\installing.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/GettingStarted/installing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

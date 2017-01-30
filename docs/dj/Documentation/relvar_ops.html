@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Relvar Operations &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Tables" href="tables.html" />
+    <link rel="prev" title="Glossary" href="glossary.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="relvar-operations">
+<h1>Relvar Operations<a class="headerlink" href="#relvar-operations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="join">
+<h2>Join<a class="headerlink" href="#join" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra#Natural_join_.28.E2.8B.88.29">natural join</a> operator between two relvars is implemented using the asterisk operator: <code class="docutils literal"><span class="pre">*</span></code>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">*</span><span class="n">B</span>
+</pre></div>
+</div>
+<p>contains all fields in both <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code>. The tuples of <code class="docutils literal"><span class="pre">A*B</span></code> contain the Cartesian product (all possible pairs) of tuples in <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code> but keeps only those that match. Matching tuples are those in which identically named attributes have equal values.</p>
+<p>In DataJoint schemas, primary key attributes of related tables share attribute names. Thus in most cases, joins are performed on primary keys.</p>
+<p>A powerful way to control the result of the join operator is by renaming the attributes of one or both arguments.</p>
+<p>Any attribute that is in the primary key of either <code class="docutils literal"><span class="pre">A</span></code> or <code class="docutils literal"><span class="pre">B</span></code> is included in the primary key of <code class="docutils literal"><span class="pre">A*B</span></code>.</p>
+<p>For example</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">cells</span> <span class="p">=</span> <span class="n">tp</span><span class="p">.</span><span class="n">Cells</span> <span class="o">*</span> <span class="n">common</span><span class="p">.</span><span class="n">Session</span>
+</pre></div>
+</div>
+<p>creates the relation <code class="docutils literal"><span class="pre">cells</span></code> with the attributes of both <code class="docutils literal"><span class="pre">common.Session</span></code> and <code class="docutils literal"><span class="pre">tp.Cells</span></code> in matching tuples.</p>
+</div>
+<div class="section" id="projection">
+<h2>Projection<a class="headerlink" href="#projection" title="Permalink to this headline">¶</a></h2>
+<p>DataJoint&#8217;s projection operator <code class="docutils literal"><span class="pre">pro</span></code> (or <code class="docutils literal"><span class="pre">project</span></code> in Python) derives a new relvar that has the same number of tuples as the input relvar but with a modified set of attributes (columns).</p>
+<p>A single call to <code class="docutils literal"><span class="pre">pro</span></code> can perform any combination of the following <a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra">relational operators</a>:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Projection_%28relational_algebra%29">project</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Rename_%28relational_algebra%29">rename</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra#The_extend_operation">extend</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra#Aggregation">aggregate</a></li>
+</ul>
+<div class="section" id="id1">
+<h3>project<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The project operator selects a subset of attributes from the original relation. The primary key is always included and cannot be projected out. Thus if no fields are specified, then the result will contain the primary key of the input relation.</p>
+</div>
+<div class="section" id="id2">
+<h3>rename<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Attributes of a relation can be renamed by adding arguments of the form <code class="docutils literal"><span class="pre">'old_name-&gt;new_name'</span></code>. Renamed attributes play an important role in conjunction with the [[join]] operator.</p>
+<p>For example, in Matlab</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="p">=</span> <span class="n">tp</span><span class="p">.</span><span class="n">Cells</span><span class="p">;</span>
+<span class="n">c1</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">pro</span><span class="p">(</span><span class="s">&#39;cell_id-&gt;c1&#39;</span><span class="p">,</span><span class="s">&#39;cell_x-&gt;x1&#39;</span><span class="p">,</span><span class="s">&#39;cell_y-&gt;y1&#39;</span><span class="p">);</span>
+<span class="n">c2</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">pro</span><span class="p">(</span><span class="s">&#39;cell_id-&gt;c2&#39;</span><span class="p">,</span><span class="s">&#39;cell_x-&gt;x2&#39;</span><span class="p">,</span><span class="s">&#39;cell_y-&gt;y2&#39;</span><span class="p">);</span>
+<span class="n">pairs</span> <span class="p">=</span> <span class="n">c1</span><span class="o">*</span><span class="n">c2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Here the resulting relation <code class="docutils literal"><span class="pre">pairs</span></code> will contain pairs of cells that have all primary key attributes matching except for <code class="docutils literal"><span class="pre">cell_id</span></code>, i.e. pairs of cells from each site. Projection removes all unmentioned attributes except for the primary key.  Thus <code class="docutils literal"><span class="pre">pairs</span></code> will have all pairs of cells and their coordinates in one relation.</p>
+</div>
+<div class="section" id="id3">
+<h3>extend<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>New attributes can be computed from existing attributes by adding arguments of the form <code class="docutils literal"><span class="pre">'expression-&gt;new_name'</span></code>.</p>
+<p>For example, in Matlab</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">deepScans</span> <span class="p">=</span> <span class="n">pro</span><span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">TpScans</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">,</span><span class="s">&#39;z−surfz −&gt; depth&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="s">&#39;depth &gt; 250&#39;</span>
+</pre></div>
+</div>
+<p>adds the new field <cite>depth</cite> to <code class="docutils literal"><span class="pre">common.TpScans</span></code>, which is computed as the difference of fields <code class="docutils literal"><span class="pre">z</span></code> and <code class="docutils literal"><span class="pre">surfz</span></code>. The relation is then restricted to depths greater than 250 to select the deep scans.</p>
+</div>
+<div class="section" id="id4">
+<h3>aggregate<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Another form of the projection operator takes two relations as input and allows adding summary computations on tuples in the second relation as attributes of the first relation. In this case, <code class="docutils literal"><span class="pre">pro</span></code> takes two relvars as arguments and the expression can include the <a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/group-by-functions.html">aggregation functions</a> <code class="docutils literal"><span class="pre">count()</span></code>, <code class="docutils literal"><span class="pre">count(distinct</span> <span class="pre">...)</span></code>, <code class="docutils literal"><span class="pre">avg()</span></code>, <code class="docutils literal"><span class="pre">max()</span></code>, <code class="docutils literal"><span class="pre">min()</span></code>, <code class="docutils literal"><span class="pre">sum()</span></code>, <code class="docutils literal"><span class="pre">variance()</span></code>, and <code class="docutils literal"><span class="pre">std()</span></code>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">=</span><span class="n">pro</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="s">&#39;summary_expression−&gt;attr1&#39;</span><span class="p">,..)</span>
+</pre></div>
+</div>
+<p>The resulting relation P will have the same primary key as R and a new attribute attr1 which contains a summary computation on matching groups of tuples in Q.</p>
+<p>For example, in Matlab</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">=</span><span class="n">pro</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">,</span><span class="s">&#39;count(*)−&gt;n&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>keeps all the old attributes of P and adds the new computed attribute n containing the number of matching tuples in Q for each tuple in P.</p>
+<p>Another example,</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">=</span><span class="n">pro</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="s">&#39;avg(pvalue&lt;0.05)−&gt;frac_significant&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates the relation P containing the fraction of tuples in Q whose attribute <code class="docutils literal"><span class="pre">pvalue</span></code> is less than 0.05 for every matching tuple in R.</p>
+<p>Another example</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">richSessions</span> <span class="p">=</span> <span class="n">pro</span><span class="p">(</span><span class="n">psy</span><span class="p">.</span><span class="n">Sessions</span><span class="p">,</span> <span class="n">psy</span><span class="p">.</span><span class="n">Trials</span><span class="p">,</span> <span class="s">&#39;count(distinct cond_id)-&gt;nconds&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="s">&#39;nconds &gt; 30&#39;</span>
+</pre></div>
+</div>
+<p>produces the selection of psychophysics sessions in which the number of unique condition ids across all trials exceeds 30.</p>
+</div>
+</div>
+<div class="section" id="restriction">
+<h2>Restriction<a class="headerlink" href="#restriction" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Selection_%28relational_algebra%29">Relational restriction</a> selects the subset of tuples that meet a given condition.</p>
+<p>In DataJoint, relational restriction is implemented using the operators <code class="docutils literal"><span class="pre">&amp;</span></code> and <code class="docutils literal"><span class="pre">-</span></code>.</p>
+<p>The following expression assigns to <code class="docutils literal"><span class="pre">rel</span></code> all the tuples from <code class="docutils literal"><span class="pre">original</span></code> that match condition <code class="docutils literal"><span class="pre">cond</span></code>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">original</span> <span class="o">&amp;</span> <span class="n">cond</span>
+</pre></div>
+</div>
+<p>The following expression assigns to <code class="docutils literal"><span class="pre">rel</span></code> all the tuples from <code class="docutils literal"><span class="pre">original</span></code> that do not match condition <code class="docutils literal"><span class="pre">cond</span></code>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">original</span> <span class="o">-</span> <span class="n">cond</span>
+</pre></div>
+</div>
+<p>The condition <code class="docutils literal"><span class="pre">cond</span></code> can be another relvar, a structure array, or string containing a condition.</p>
+<div class="section" id="restriction-by-another-relvar">
+<h3>Restriction by another relvar<a class="headerlink" href="#restriction-by-another-relvar" title="Permalink to this headline">¶</a></h3>
+<p><em>semjoin and antijoin</em></p>
+<p>Recall that two tuples <em>match</em> when their identically named attributes contain equal values.  When <code class="docutils literal"><span class="pre">cond</span></code> is another relvar, the result of <code class="docutils literal"><span class="pre">original</span> <span class="pre">&amp;</span> <span class="pre">cond</span></code> will contain all tuples for which there exist a matching tuple in <code class="docutils literal"><span class="pre">cond</span></code>.</p>
+<p>For example, referring to schema <code class="docutils literal"><span class="pre">common</span></code> and schema <code class="docutils literal"><span class="pre">psy</span></code>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">&amp;</span> <span class="n">psy</span><span class="p">.</span><span class="n">Session</span><span class="p">)</span> <span class="o">-</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span>
+</pre></div>
+</div>
+<p>the resulting relation <code class="docutils literal"><span class="pre">rel</span></code> will contain all animals that have participated in at least one psychophysics session but have not had any two-photon imaging performed on them.</p>
+<p>If <code class="docutils literal"><span class="pre">cond</span></code> does not have any attributes with the same names as in <code class="docutils literal"><span class="pre">original</span></code>, then <code class="docutils literal"><span class="pre">rel</span></code> will be equal to <code class="docutils literal"><span class="pre">original</span></code>.</p>
+<p>In formal <a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra">relational algebra</a>, restrictions by another relation are known as <a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra#Semijoin_.28.E2.8B.89.29.28.E2.8B.8A.29">semijoin</a> (<cite>&amp;</cite>) and <a class="reference external" href="http://en.wikipedia.org/wiki/Relational_algebra#Antijoin_.28.E2.96.B7.29">antijoin</a> (<cite>-</cite>).</p>
+</div>
+<div class="section" id="restriction-by-a-structure-array">
+<h3>Restriction by a structure array<a class="headerlink" href="#restriction-by-a-structure-array" title="Permalink to this headline">¶</a></h3>
+<p>Relations can be represented in MATLAB by structure arrays, and dicts of a list of dicts in Python.  Restriction by a data structure has the same meaning as restriction by another relvar.</p>
+<p>For example, in Matlab,</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span> <span class="o">&amp;</span> <span class="n">struct</span><span class="p">(</span><span class="s">&#39;animal_id&#39;</span><span class="p">,</span> <span class="mi">14526</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>returns all two-photon sessions for animal 14526.</p>
+<p>The corresponding Python call would be</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">TpSession</span> <span class="o">&amp;</span> <span class="nb">dict</span><span class="p">(</span><span class="n">animal_id</span><span class="o">=</span><span class="mi">14526</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Restriction by a structure plays an important role for addressing tuples or for iterating over tuples. For example, to review groups of tuples in <code class="docutils literal"><span class="pre">common.TpScan</span></code> for each <code class="docutils literal"><span class="pre">common.TpSession</span></code>, the following code could be used:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="c">% iterate through two-photon scans</span>
+<span class="k">for</span> <span class="n">key</span> <span class="p">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">TpSession</span><span class="p">)</span><span class="o">&#39;</span>   <span class="c">% primary key values of two-photon sessions</span>
+    <span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">TpScan</span> <span class="o">&amp;</span> <span class="n">key</span><span class="p">;</span>
+    <span class="c">% rel now represents all scans for the session identified by key</span>
+    <span class="c">... do something with it here</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>The corresponding Python code would be</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># iterate through two-photon scans</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">common</span><span class="o">.</span><span class="n">TpSession</span><span class="p">:</span>   <span class="c1"># primary key values of two-photon sessions</span>
+    <span class="n">rel</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">TpScan</span> <span class="o">&amp;</span> <span class="n">key</span>
+    <span class="c1"># rel now represents all scans for the session identified by key</span>
+    <span class="c1"># ... do something with it here</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="restriction-by-a-string-condition">
+<h3>Restriction by a string condition<a class="headerlink" href="#restriction-by-a-string-condition" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">cond</span></code> could also be a string containing a condition. These conditions are simply plugged into the SQL query and must be specified in SQL boolean expression syntax.</p>
+<p>For example,</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span> <span class="o">&amp;</span> <span class="c">...</span>
+    <span class="s">&#39;anesthesia=&quot;fentanyl&quot; and lens in (&quot;25x&quot;,&quot;16x&quot;)&#39;</span> <span class="o">&amp;</span> <span class="c">...</span>
+    <span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">&amp;</span> <span class="s">&#39;date_of_birth&gt;&quot;2012-06-01&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will contain all two-photon imaging sessions that were performed under fentanyl anesthesia using the 25&amp;times; or the 16&amp;times; objective lens in which the subject was born after June 1, 2012.</p>
+</div>
+<div class="section" id="restriction-by-a-union-of-conditions">
+<h3>Restriction by a union of conditions<a class="headerlink" href="#restriction-by-a-union-of-conditions" title="Permalink to this headline">¶</a></h3>
+<p>In the expression <code class="docutils literal"><span class="pre">rel</span> <span class="pre">=</span> <span class="pre">original</span> <span class="pre">&amp;</span> <span class="pre">(cond1</span> <span class="pre">|</span> <span class="pre">cond2)</span></code> the result <code class="docutils literal"><span class="pre">rel</span></code> will contain tuples from <code class="docutils literal"><span class="pre">original</span></code> that match either <code class="docutils literal"><span class="pre">cond1</span></code> or <code class="docutils literal"><span class="pre">cond2</span></code>, where <code class="docutils literal"><span class="pre">cond1</span></code> must be relvar but <code class="docutils literal"><span class="pre">cond2</span></code> can be a struct or a string.</p>
+<p>Any number of conditions can be united, <code class="docutils literal"><span class="pre">rel</span> <span class="pre">=</span> <span class="pre">original</span> <span class="pre">-</span> <span class="pre">(cond1</span> <span class="pre">|</span> <span class="pre">cond2</span> <span class="pre">|</span> <span class="pre">cond3</span> <span class="pre">...)</span></code>.</p>
+<p>Note that the expression <code class="docutils literal"><span class="pre">rel</span> <span class="pre">|</span> <span class="pre">cond</span></code> by itself does not produce a valid relation and can only be used to restrict another relation.</p>
+<p>For example</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">psy</span><span class="p">.</span><span class="n">Session</span> <span class="o">|</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will describe all animals that have participated in a psychophysics session or a two-photon session or both, which is logically equivalent to</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">-</span> <span class="p">(</span><span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">-</span> <span class="n">psy</span><span class="p">.</span><span class="n">Session</span> <span class="o">-</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another example:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">-</span> <span class="p">(</span><span class="n">psy</span><span class="p">.</span><span class="n">Session</span> <span class="o">|</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will describe all animals that did not participate in either kind of session, which is logically equivalent to</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">rel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="o">-</span> <span class="n">psy</span><span class="p">.</span><span class="n">Session</span> <span class="o">-</span> <span class="n">common</span><span class="p">.</span><span class="n">TpSession</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="op-execution-speed">
+<h2>Op Execution Speed<a class="headerlink" href="#op-execution-speed" title="Permalink to this headline">¶</a></h2>
+<p>Logically equivalent relational expressions may take very different times to execute. It takes some experience to learn to devise fast expressions. This is a direct result of the structure of the underlying SQL queries.</p>
+<p>For example,</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">*</span><span class="n">B</span> <span class="o">&amp;</span> <span class="s">&#39;condition on B&#39;</span>
+</pre></div>
+</div>
+<p>often executes faster than</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">B</span> <span class="o">&amp;</span> <span class="s">&#39;condition on B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>even though the first expression has more attributes.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">A</span> <span class="o">&amp;</span> <span class="s">&#39;condition on A&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">B</span>
+</pre></div>
+</div>
+<p>often takes longer than</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">*</span><span class="n">B</span> <span class="o">&amp;</span> <span class="s">&#39;condition on A&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Relvar Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#join">Join</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#projection">Projection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restriction">Restriction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#op-execution-speed">Op Execution Speed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/relvar_ops.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\relvar_ops.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\relvar_ops.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/relvar_ops.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuring a Connection &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="Getting Started" href="../getting_started.html" />
+    <link rel="next" title="Installing DataJoint" href="installing.html" />
+    <link rel="prev" title="Getting Started" href="../getting_started.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuring-a-connection">
+<h1>Configuring a Connection<a class="headerlink" href="#configuring-a-connection" title="Permalink to this headline">¶</a></h1>
+<p>&#8220;How do I point datajoint at the correct server with my credentials?&#8221;</p>
+<p>You will need:</p>
+<ul class="simple">
+<li>the server host name, including the database server port</li>
+<li>user name</li>
+<li>password</li>
+<li>the database name that will store your schema (note that a MySQL server can hold several databases)</li>
+</ul>
+<div class="section" id="providing-the-database-information">
+<h2>Providing the database information<a class="headerlink" href="#providing-the-database-information" title="Permalink to this headline">¶</a></h2>
+<p>Assign the connection information to environment variables <cite>DJ_HOST</cite>, <cite>DJ_USER</cite>, and <cite>DJ_PASS</cite> of you operating system. Environment variables are specified differently on different operating systems.</p>
+<p><strong>MacOS X</strong></p>
+<p>Add the following lines to <cite>~/.profile</cite>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>EXPORT <span class="nv">DJ_HOST</span> <span class="o">=</span> <span class="s2">&quot;mysqlhost.university.edu:3306&quot;</span>
+EXPORT <span class="nv">DJ_USER</span> <span class="o">=</span> <span class="s2">&quot;myusername&quot;</span>
+EXPORT <span class="nv">DJ_PASS</span> <span class="o">=</span> <span class="s2">&quot;mypassword&quot;</span>
+</pre></div>
+</div>
+<p>and replace the information in the string with your information. Note that the server port is appended to the host name, separated by a colon.</p>
+<p><strong>Windows</strong></p>
+<p>On Windows, the environment variables are set through the <strong>Properties</strong> dialog of the <strong>My computer</strong> icon.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://support.microsoft.com/kb/310519">http://support.microsoft.com/kb/310519</a> (Windows XP)</li>
+<li><a class="reference external" href="http://www.itechtalk.com/thread3595.html">http://www.itechtalk.com/thread3595.html</a> (Windows 7).</li>
+</ul>
+<p><strong>Linux</strong></p>
+<p>Go to the directory, where you want to run scripts from. Open the python3 interpreter and import datajoint</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datajoint</span> <span class="kn">as</span> <span class="nn">dj</span>
+</pre></div>
+</div>
+<p>You will see the following output</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>Local config file dj_local_conf.json does not exist! Creating it.
+</pre></div>
+</div>
+<p>Edit the file <cite>dj_local_conf.json</cite></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;database.host&quot;</span><span class="p">:</span> <span class="s2">&quot;mysqlhost.university.edu&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;database.password&quot;</span><span class="p">:</span> <span class="s2">&quot;datajoint&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;database.port&quot;</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span>
+    <span class="nt">&quot;loglevel&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;display.width&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="nt">&quot;display.limit&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="nt">&quot;safemode&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;database.user&quot;</span><span class="p">:</span> <span class="s2">&quot;myusername&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;connection.init_function&quot;</span><span class="p">:</span> <span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and replace <em>USER</em> with your database user and <em>PASSWORD</em> with your database password. If you are not running mysql locally, you need to replace host as well. In most cases, this should be all you need to do. Now DataJoint will use these settings when you start it from the same directory. If you don&#8217;t want to specify the password in the file, just delete the line. DataJoint will ask you for the password once it tries to connect to the database.</p>
+<p>You can test the connection via</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datajoint</span> <span class="kn">as</span> <span class="nn">dj</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">dj</span><span class="o">.</span><span class="n">conn</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This should show you</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>Connected myuser@mysqlhost.university.edu:3306
+</pre></div>
+</div>
+<p><strong>Alternative</strong></p>
+<p>Alternatively, you may set the environment variables directly from MATLAB. For example, you could include the following lines to your <cite>startup.m</cite>.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">setenv</span> <span class="n">DJ_HOST</span> <span class="n">mysqlhost</span><span class="p">.</span><span class="n">university</span><span class="p">.</span><span class="n">edu</span><span class="p">:</span><span class="mi">3306</span>
+<span class="n">setenv</span> <span class="n">DJ_USER</span> <span class="n">myusername</span>
+<span class="n">setenv</span> <span class="n">DJ_PASS</span> <span class="n">mypassword</span>
+</pre></div>
+</div>
+<p><strong>Remark</strong>
+For special technical reasons, sometimes users may want to execute an SQL query at the start of each connection. Use the optional environment variable <cite>DJ_INIT</cite> to specify the initial command.</p>
+<p>For example, setting the initial command to</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">setenv</span> <span class="n">DJ_INIT</span> <span class="s">&#39;SET SESSION sql_mode=&quot;TRADITIONAL&quot;&#39;</span>
+</pre></div>
+</div>
+<p>will set the subsequent connections to the <a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/server-sql-mode.html">traditional SQL mode</a>. The initial command is used to modify session settings when they cannot be modified globally for all users using the server configuration file.</p>
+<p><strong>Test</strong></p>
+<p>From MATLAB, check that your environment variables are set, e.g.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">getenv</span> <span class="n">DJ_HOST</span>
+</pre></div>
+</div>
+<p>To test your connection, type</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">dj</span><span class="p">.</span><span class="n">conn</span>
+</pre></div>
+</div>
+<p>If you are familiar with SQL, you can execute SQL commands using the connection object returned by <strong>dj.conn</strong>:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">query</span><span class="p">(</span><span class="n">dj</span><span class="p">.</span><span class="n">conn</span><span class="p">,</span> <span class="s">&#39;SHOW SCHEMAS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configuring a Connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#providing-the-database-information">Providing the database information</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installing.html">Installing DataJoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prereqs.html">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/GettingStarted/configure_conn.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\GettingStarted\configure_conn.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\GettingStarted\configure_conn.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/GettingStarted/configure_conn.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

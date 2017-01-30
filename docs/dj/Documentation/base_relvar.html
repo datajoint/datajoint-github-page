@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Representing Table Relationships &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Computed Tables" href="computed_tables.html" />
+    <link rel="prev" title="Structuring Data" href="advanced/table_design_notes.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="representing-table-relationships">
+<h1>Representing Table Relationships<a class="headerlink" href="#representing-table-relationships" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="whats-a-base-relvar">
+<h2>What’s a base relvar?<a class="headerlink" href="#whats-a-base-relvar" title="Permalink to this headline">¶</a></h2>
+<p>A base relvar object represents the relation containing the entire contents of its table. Other relations can be derived from base relvars using relational operators. Note that the relvar objects do not themselves contain any data. They only form the specific query that can be used to fetch data into the current workspace.</p>
+<p>A DataJoint <em>schema</em> is the pairing of a MySQL database with a Matlab/Python package.</p>
+<p>A <em>base relvar</em> is a MATLAB/Python class in a DataJoint schema associated with a table in the database.</p>
+<p>Users first create base relvars, which in turn automatically create their tables. Thus a base relvar provides a full interface to its table.</p>
+<p>The name of the created table will be similar to the name of the class with a prefix indicating the table tier. For example, the computed base relvar <cite>tp.OrientationTuning</cite> will create the database table <cite>__orientation_tuning</cite>, where the double-underscore prefix indicates that this is a computed table However, DataJoint users never need to address tables by their internal names.</p>
+</div>
+<div class="section" id="matlab-examples">
+<h2>Matlab Examples<a class="headerlink" href="#matlab-examples" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>display</cite> method shows few tuples from the table and the total count of tuples.  For example, simply typing the class name of <cite>common.Animal</cite> from the <em>common</em> schema will display</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">common</span><span class="p">.</span><span class="n">Animal</span>
+
+<span class="n">self</span> <span class="p">=</span>
+
+  <span class="n">common</span><span class="p">.</span><span class="n">Animal</span> <span class="n">handle</span>
+  <span class="n">Package</span><span class="p">:</span> <span class="n">common</span>
+
+  <span class="n">Properties</span><span class="p">:</span>
+           <span class="n">table</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="p">]</span>
+          <span class="n">schema</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">dj</span><span class="p">.</span><span class="n">Schema</span><span class="p">]</span>
+          <span class="n">header</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+             <span class="n">sql</span><span class="p">:</span> <span class="s">&#39;`common`.`animal`&#39;</span>
+      <span class="n">primaryKey</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;animal_id&#39;</span><span class="p">}</span>
+    <span class="n">nonKeyFields</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;real_id&#39;</span>  <span class="s">&#39;date_of_birth&#39;</span>  <span class="s">&#39;sex&#39;</span>  <span class="s">&#39;animal_notes&#39;</span>  <span class="s">&#39;animal_ts&#39;</span><span class="p">}</span>
+    <span class="n">restrictions</span><span class="p">:</span> <span class="p">{}</span>
+
+  <span class="n">Methods</span><span class="p">,</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Superclasses</span>
+
+
+     <span class="n">animal_id</span>       <span class="n">real_id</span>  <span class="n">date_of_birt</span>           <span class="n">sex</span>  <span class="n">animal_notes</span>     <span class="n">animal_ts</span>
+             <span class="mi">0</span>             <span class="mi">0</span>    <span class="mi">2001</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span>       <span class="n">unknown</span>  <span class="n">testing</span> <span class="n">dumm</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">17</span> <span class="mi">0</span>
+             <span class="mi">4</span>   <span class="mi">10575</span><span class="p">:</span><span class="mi">33922</span>    <span class="mi">0000</span><span class="o">-</span><span class="mi">00</span><span class="o">-</span><span class="mi">00</span>       <span class="n">unknown</span>  <span class="n">Keith</span><span class="o">&#39;</span><span class="n">s</span> <span class="n">GCaM</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">11</span> <span class="mi">1</span>
+           <span class="mi">408</span>           <span class="mi">408</span>    <span class="mi">2011</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">11</span>             <span class="n">F</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">23</span> <span class="mi">0</span>
+           <span class="mi">436</span>           <span class="mi">325</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">15</span>             <span class="n">M</span>                <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">24</span> <span class="mi">1</span>
+           <span class="mi">444</span>           <span class="mi">444</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">21</span>             <span class="n">F</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">21</span> <span class="mi">1</span>
+           <span class="mi">445</span>           <span class="mi">445</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">21</span>             <span class="n">F</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">22</span> <span class="mi">0</span>
+           <span class="mi">467</span>           <span class="mi">467</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span>             <span class="n">M</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">27</span> <span class="mi">1</span>
+           <span class="mi">476</span>           <span class="mi">476</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">02</span>             <span class="n">M</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">29</span> <span class="mi">1</span>
+           <span class="mi">477</span>           <span class="mi">477</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">02</span>             <span class="n">M</span>                <span class="mi">2012</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">05</span> <span class="mi">1</span>
+           <span class="mi">480</span>           <span class="mi">480</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">11</span>             <span class="n">M</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">16</span> <span class="mi">1</span>
+           <span class="mi">481</span>           <span class="mi">481</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">11</span>             <span class="n">M</span>        <span class="n">C57BL6</span>  <span class="mi">2012</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">12</span> <span class="mi">1</span>
+           <span class="mi">482</span>           <span class="mi">482</span>    <span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">11</span>             <span class="n">M</span>                <span class="mi">2012</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">17</span> <span class="mi">1</span>
+         <span class="c">.....         .....         .....         .....         .....         .....</span>
+<span class="mi">45</span> <span class="n">tuples</span> <span class="p">(</span><span class="mf">0.0382</span> <span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="defining-schema">
+<h3>Defining Schema<a class="headerlink" href="#defining-schema" title="Permalink to this headline">¶</a></h3>
+<p>To create a new base relvar interactively, use the <strong>dj.new</strong> command:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">dj</span><span class="p">.</span><span class="n">new</span>
+</pre></div>
+</div>
+<p>You will be prompted to enter the class name, its tier, and its foreign keys. The class name must be in format <cite>package.ClassName</cite>. The <cite>ClassName</cite> must start with a capital letter and only include alphanumerical characters.</p>
+<p>Then <strong>dj.new</strong> will automatically create a new .m file with the complete definition of the class. For example, if we specified the class name <cite>tp.Test</cite> with tier <cite>manual</cite>, the class definition file will be</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="cm">%{</span>
+<span class="cm">tp.Test (manual) # my newest table</span>
+
+<span class="cm">-----</span>
+
+<span class="cm">%}</span>
+
+<span class="k">classdef</span> <span class="n">Test</span> <span class="o">&lt;</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>The first percent-brace comment block that starts with <cite>%{</cite> and ends with <cite>%}</cite> has special meaning in DataJoint. It contains the [table declaration](/2015/05/05/tabledeclaration/).  Upon the first invocation of an object of this class, if the table is not yet created in the database, DataJoint will automatically create the table based on this declaration.
+### Python</p>
+<p>Python does not have a similar script. If you think that such a script is urgently needed, please fork [datajoint-python](<a class="reference external" href="https://github.com/datajoint/datajoint-python">https://github.com/datajoint/datajoint-python</a>) on github, create such a function, and send us a pull request. If you think that coding such a function exceeds your coding abilities, you can also raise an issue in the [issue tracker](<a class="reference external" href="https://github.com/datajoint/datajoint-python/issues">https://github.com/datajoint/datajoint-python/issues</a>) on github.
+## interactive creation</p>
+<p>## display Schema
+### Matlab</p>
+<p>### Python
+In python you can simply call <cite>print(animal)</cite> if <cite>animal</cite> is an instance of the <cite>common.Animal</cite> schema. This will print a similar output to the prompt.</p>
+<p>## Primary keys</p>
+<p>### Matlab</p>
+<p>### Python</p>
+<p>## Foreign keys</p>
+<p>### Matlab</p>
+<p>### Python</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="https://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Representing Table Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#whats-a-base-relvar">What’s a base relvar?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#matlab-examples">Matlab Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/base_relvar.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\base_relvar.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\base_relvar.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/base_relvar.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
