@@ -37,7 +37,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'edit_on_github'
 ]
-edit_on_github_project= 'edgera/edgera.github.io'
+edit_on_github_project= 'datajoint/datajoint.github.io'
 edit_on_github_branch= 'master'
 
 # Add any paths that contain templates here, relative to this directory.
@@ -137,8 +137,8 @@ html_theme = 'alabaster'
 
 html_theme_options = {
     'logo': 'img/dj_logo.png',
-    'github_user': 'edgera',
-    'github_repo': 'edgera.github.io',
+    'github_user': 'datajoint',
+    'github_repo': 'datajoint.github.io',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
