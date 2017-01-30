@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Glossary &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Tables" href="tables.html" />
+    <link rel="prev" title="Representing Table Relationships" href="base_relvar.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<p>Definition of common terms for databases</p>
+<p>The following is a very brief informal introduction to  the relational data model as implemented by DataJoint.</p>
+<div class="section" id="tuples">
+<h2>Tuples<a class="headerlink" href="#tuples" title="Permalink to this headline">¶</a></h2>
+<p>A <em>tuple</em> is a set of attribute name/value pairs. For example, the tuple</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>mouse_id   measure_date   weight
+ 1001      2010-10-10     21.5
+</pre></div>
+</div>
+<p>in a given relation (table) may represent a real-world fact such as &#8220;On Oct. 10, 2010, mouse #1001 weighed 21.5 grams.&#8217;&#8217;  An attribute name is more than just a name: it implies a particular <em>datatype</em> (domain) and a unique <em>role</em> in the tuple and in the external world.  Thus attribute names must be unique in a tuple and their order in the tuple is not significant.</p>
+<p>The closest equivalent of a tuple in Matlab is a structure. The closest data structure in Python is a named tuple.</p>
+<p>We will use the terms <em>attribute</em> and <em>field</em> interchangeably.</p>
+</div>
+<div class="section" id="relations">
+<h2>Relations<a class="headerlink" href="#relations" title="Permalink to this headline">¶</a></h2>
+<p>A relation is a set of tuples that share the same set of attribute names. No duplicate tuples can exist in a relation.  The ordering of tuples in a relation is not significant.</p>
+<p>A <em>base relation</em> is the contents of a <em>table</em> in the database. Operators of relational algebra produce new <em>derived relations</em> from other relations.</p>
+</div>
+<div class="section" id="relvars">
+<h2>Relvars<a class="headerlink" href="#relvars" title="Permalink to this headline">¶</a></h2>
+<p>A relation is a constant object. In contrast, a relvar (relation variable) is a variable that holds a relation.</p>
+<p>Starting with a <em>base relvar</em> expressing the complete contents of a given <em>table</em> in the database, we can transform them into <em>derived relations</em> by applying <em>relational operators</em> until they contain only all the necessary information, and then retrieve their values into the Matlab/Python workspace.  We will use the term <em>table</em> and <em>base relvar</em> interchangeably.</p>
+</div>
+<div class="section" id="matching-tuples">
+<h2>Matching tuples<a class="headerlink" href="#matching-tuples" title="Permalink to this headline">¶</a></h2>
+<p>The key concept at the foundation of data manipulations in the relational model is <em>tuple matching</em>.  Two tuples match if their identically named attributes contain equal values.</p>
+<p>Thus one tuple may be used to address a group of  other matching tuples in a relation (e.g. see the restrict, semijoin, antijoin, and union operators in [[restriction]]). Two tuples may be merged into one if they match, but not otherwise. The <em>join</em> of two relations is the set of all possible merged pairs from the two original relations.</p>
+</div>
+<div class="section" id="primary-key">
+<h2>Primary key<a class="headerlink" href="#primary-key" title="Permalink to this headline">¶</a></h2>
+<p>In DataJoint, each relation has one <em>primary key</em> comprising a subset of its attributes that are designated to uniquely identify any tuple in the relation. No two tuples in the same relation can have the same combination of values in their primary key fields.  To uniquely identify a tuple in the relation, one must provide the values of the primary key fields as a matching tuple.</p>
+</div>
+<div class="section" id="foreign-key">
+<h2>Foreign key<a class="headerlink" href="#foreign-key" title="Permalink to this headline">¶</a></h2>
+<p>A base relation may have one or more <em>foreign keys</em>, i.e. a subset of its attributes that correspond to the primary key of another, <em>referenced</em> base relation. The database will enforce <em>referential constraints</em>: a base relation cannot contain a tuple whose foreign key value does not match the primary key value of a tuple in the referenced relation.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Site Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tuples">Tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relations">Relations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relvars">Relvars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#matching-tuples">Matching tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#primary-key">Primary key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#foreign-key">Foreign key</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/glossary.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/glossary.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
