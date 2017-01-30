@@ -134,7 +134,12 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+
+html_theme_options = {
+    'logo': 'img/dj_logo.png',
+    'github_user': 'edgera',
+    'github_repo': 'edgera.github.io',
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -183,9 +188,10 @@ html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 #
-html_sidebars = {'**': ['globaltoc.html',  'sourcelink.html', 'searchbox.html']}
+html_sidebars = {'**': ['logobar.html','globaltoc.html',  'searchbox.html',  'sourcelink.html', 'hacks.html']}
 
-
+def setup(app):
+    app.add_stylesheet('css/color.css')
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

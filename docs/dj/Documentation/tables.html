@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +26,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
     <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
-    <link rel="prev" title="Glossary" href="glossary.html" />
+    <link rel="next" title="Working with Data" href="working_with_data.html" />
+    <link rel="prev" title="Relvar Operations" href="relvar_ops.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -46,7 +48,7 @@
 <div class="section" id="table-types">
 <h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
 <p>Every table in a DataJoint schema is assigned one of the four tiers: <cite>lookup</cite>, <cite>manual</cite>, <cite>imported</cite>, or <cite>computed</cite>.  The tier helps establish the basic role of the data in the table and how valuable (difficult to replace) these data are. In Python, the tier is specified by inheriting from <cite>dj.Manual</cite>, <cite>dj.Computed</cite>, <cite>dj.Lookup</cite>, or <cite>dj.Imported</cite>. Additionally, one can mix in inheritance from <cite>dj.Subordinate</cite> to indicate that the table is a subtable.</p>
-<p><strong>Lookup</strong> tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up.</p>
+<p><strong>Lookup</strong> tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up. An example for using google spreadsheets ax an external lookup table can be found <a class="reference internal" href="advanced/google_sheets_lookup.html#google-sheets-lookup"><span class="std std-ref">here</span></a>.</p>
 <p><strong>Manual</strong> tables contain information about experiments that are entered manually or by other software outside of the DataJoint processing chain. Due to their high value and small size, manual tables are backed up most frequently (e.g. everyday or after every experiment).</p>
 <p><strong>Imported</strong> tables contain information that is computed automatically by the DataJoint processing chain but requires access to external files outside the database (e.g. raw recordings). Raw recordings are typically in large files that cannot be kept online indefinitely. Once the extraction algorithms have stabilized and the extracted data have been imported into the database, the raw recordings may be taken offline. Imported tables need to be backed up regularly, especially after the raw data files have been taken offline.</p>
 <p><strong>Computed</strong> tables are populated automatically with data obtained from other tables within the database. Computed tables do not typically need to be backed up at all unless the computation time far exceeds the effort of restoring from backups.</p>
@@ -234,8 +236,8 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
 <div class="section" id="modifying-tables">
 <h2>Modifying Tables<a class="headerlink" href="#modifying-tables" title="Permalink to this headline">¶</a></h2>
 <p>Once a table has been declared and populated, it is still possible to change the structure of the table and its foreign keys. These changes are accomplished by the following methods:</p>
-<div class="section" id="matlab">
-<h3>Matlab<a class="headerlink" href="#matlab" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="modifying-in-matlab">
+<h3>Modifying in Matlab<a class="headerlink" href="#modifying-in-matlab" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">addAttribute</span>
 <span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">alterAttribute</span>
 <span class="n">dj</span><span class="p">.</span><span class="n">Table</span><span class="o">/</span><span class="n">dropAttribute</span>
@@ -255,10 +257,14 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
 </div>
 <p>Each of these functions will request user confirmation before automatically updating the table declaration in the class file.</p>
 </div>
-<div class="section" id="python">
-<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="modifying-in-python">
+<h3>Modifying in Python<a class="headerlink" href="#modifying-in-python" title="Permalink to this headline">¶</a></h3>
 <p>In Python these functions are not provided at the moment,  but we are working on it ...</p>
 </div>
+</div>
+<div class="section" id="more-reading">
+<h2>More reading<a class="headerlink" href="#more-reading" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="advanced/table_design_notes.html#structuring-data"><span class="std std-ref">structuring data</span></a></p>
 </div>
 </div>
 
@@ -267,8 +273,38 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h3><a href="../../index.html">Site Contents</a></h3>
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
 </ul>
@@ -276,7 +312,11 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#table-types">Table Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#declaring-tables">Declaring Tables</a></li>
@@ -286,27 +326,14 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
 <li class="toctree-l3"><a class="reference internal" href="#secondary-indices">secondary indices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dropping-tables">Dropping tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#modifying-tables">Modifying Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-reading">More reading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/dj/Documentation/tables.txt"
-            rel="nofollow">Show Source</a></li>
-      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\tables.rst"
-            rel="nofollow">Show on GitHub</a></li>
-      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\tables.rst"
-             rel="nofollow">Edit on GitHub</a></li>
-
-    </ul>
-
-
-
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -317,6 +344,49 @@ For example, mice in our lab are assigned unique IDs. The mouse ID number of typ
     </form>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/tables.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\tables.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\tables.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
         </div>
       </div>
       <div class="clearer"></div>

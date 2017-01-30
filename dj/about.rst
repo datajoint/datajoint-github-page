@@ -3,9 +3,12 @@ About DataJoint
 
 
 .. toctree::
-   :glob:
+   :titlesonly:
 
-   About/**
+   About/history
+   About/citing
+   About/license
+   About/faq
 
 
 This page is written to help you decide if DataJoint is the right tool for your application.

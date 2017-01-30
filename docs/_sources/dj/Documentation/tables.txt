@@ -8,7 +8,7 @@ Table Types
 
 Every table in a DataJoint schema is assigned one of the four tiers: `lookup`, `manual`, `imported`, or `computed`.  The tier helps establish the basic role of the data in the table and how valuable (difficult to replace) these data are. In Python, the tier is specified by inheriting from `dj.Manual`, `dj.Computed`, `dj.Lookup`, or `dj.Imported`. Additionally, one can mix in inheritance from `dj.Subordinate` to indicate that the table is a subtable.
 
-**Lookup** tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up.
+**Lookup** tables contain information that is involved in setting up the processing chain itself: filter settings, algorithm parameters, etc. Lookup tables are populated manually and their contents are copied when a new schema is set up. An example for using google spreadsheets ax an external lookup table can be found :ref:`here<Google Sheets Lookup>`.
 
 **Manual** tables contain information about experiments that are entered manually or by other software outside of the DataJoint processing chain. Due to their high value and small size, manual tables are backed up most frequently (e.g. everyday or after every experiment).
 
@@ -253,8 +253,8 @@ Modifying Tables
 
 Once a table has been declared and populated, it is still possible to change the structure of the table and its foreign keys. These changes are accomplished by the following methods:
 
-Matlab
-------
+Modifying in Matlab
+-------------------
 
 .. code-block:: matlab
 
@@ -281,7 +281,12 @@ For example, change the definition of the existing field `nframes` in table `tp.
 
 Each of these functions will request user confirmation before automatically updating the table declaration in the class file.
 
-Python
-------
+Modifying in Python
+-------------------
 
 In Python these functions are not provided at the moment,  but we are working on it ...
+
+
+More reading
+============
+:ref:`structuring data<Structuring Data>`

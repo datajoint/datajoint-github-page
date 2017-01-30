@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Distributed Processing &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Entitity Relationship Diagram" href="entity_relationship_diagram.html" />
+    <link rel="prev" title="Computed Tables" href="computed_tables.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="distributed-processing">
+<h1>Distributed Processing<a class="headerlink" href="#distributed-processing" title="Permalink to this headline">¶</a></h1>
+<p>&#8220;Populated tables from multiple machines.&#8221;</p>
+<p>DataJoints computed tables support distributed processing. This allows you to start several processes on multiple computers at the same time to populate the table in parallel. This goes very well together with GNU parallel. This post quickly discusses how to setup distributed processing.</p>
+<p>DataJoint implements job management for distributed computation. Job management is used when the <cite>parpopulate</cite> method is used to populate any table.</p>
+<p>Upon the first invocation of <cite>parpopulate</cite> in a given schema, DataJoint will automatically create the job management table and its class <cite>&lt;package&gt;.Jobs</cite>.</p>
+<p>The job management table contains an entry for each <cite>makeTuples</cite>/<cite>_make_tuples</cite> call that has been reserved for computed or that ended in error during the last execution (the error stack is saved). A successful completion of all population tasks will leave the job management table empty.</p>
+<div class="section" id="executing-multiple-make-tuples">
+<h2>Executing multiple Make Tuples<a class="headerlink" href="#executing-multiple-make-tuples" title="Permalink to this headline">¶</a></h2>
+<p>Assume you have the following setup</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datajoint</span> <span class="kn">as</span> <span class="nn">dj</span>
+
+<span class="n">myschema</span> <span class="o">=</span> <span class="n">dj</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="s1">&#39;mydatabasename&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+
+<span class="nd">@myschema</span>
+<span class="k">class</span> <span class="nc">MyAnalysis</span><span class="p">(</span><span class="n">dj</span><span class="o">.</span><span class="n">Computed</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">_make_tuples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="c1"># do something here</span>
+</pre></div>
+</div>
+<p>Then you can populate the with <code class="docutils literal"><span class="pre">MyAnalysis().populate()</span></code>. If you additionally specify the keyword argument <code class="docutils literal"><span class="pre">MyAnalysis().populate(reserve_jobs=True)</span></code> then DataJoint will generate an extra table for job reservation to avoid that two results get computed twice. The job table is available from <code class="docutils literal"><span class="pre">myschema.jobs</span></code>. If jobs exit successfully, then the corresponding job will be deleted form the table. If the job exits with an error, the table will contain information about the error.</p>
+</div>
+<div class="section" id="using-gnu-parallel">
+<h2>Using GNU Parallel<a class="headerlink" href="#using-gnu-parallel" title="Permalink to this headline">¶</a></h2>
+<p>Now you can start as many python scripts as you want that will populate the table. One very nice tool to do that is GNU parallel. A very nice post about it can be found <a class="reference external" href="http://unethicalblogger.com/2010/11/11/gnu-parallel-changed-my-life.html">here</a>. Here&#8217;s an example to start 11 jobs. Just type the following in your shell</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">printf</span> <span class="s1">&#39;python -c &quot;MyAnalysis().populate(reserve_jobs=True)&quot;;\n%.0s&#39;</span> <span class="o">{</span><span class="m">1</span>..11<span class="o">}</span><span class="p">|</span> parallel -j <span class="m">11</span>
+</pre></div>
+</div>
+<p>While the jobs are computing, you can check how many jobs are completed by using <code class="docutils literal"><span class="pre">MyAnalysis().progress()</span></code> in your python prompt.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computed_tables.html">Computed Tables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Distributed Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#executing-multiple-make-tuples">Executing multiple Make Tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-gnu-parallel">Using GNU Parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/distributed_processing.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\distributed_processing.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\distributed_processing.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/distributed_processing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

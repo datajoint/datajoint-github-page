@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Frequently Asked Questions &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="About DataJoint" href="../about.html" />
+    <link rel="next" title="Getting Started" href="../getting_started.html" />
+    <link rel="prev" title="License" href="license.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-kind-of-data-can-datajoint-accommodate">
+<h2>What kind of data can DataJoint accommodate?<a class="headerlink" href="#what-kind-of-data-can-datajoint-accommodate" title="Permalink to this headline">¶</a></h2>
+<p>DataJoint is a framework that helps organize data using the relational data model. It can accommodate any data. In its most common use, data are inserted from MATLAB, so if it can be stored in a MATLAB variable, it can be stored in DataJoint.</p>
+</div>
+<div class="section" id="is-datajoint-ready">
+<h2>Is DataJoint ready?<a class="headerlink" href="#is-datajoint-ready" title="Permalink to this headline">¶</a></h2>
+<p>The MATLAB and Python versions of DataJoint are mature. Any outstanding issues can be viewed or submitted <a class="reference external" href="https://github.com/datajoint/datajoint-matlab/issues">here</a></p>
+</div>
+<div class="section" id="how-big-are-the-datasets-that-can-be-handled-with-datajoint">
+<h2>How big are the datasets that can be handled with DataJoint?<a class="headerlink" href="#how-big-are-the-datasets-that-can-be-handled-with-datajoint" title="Permalink to this headline">¶</a></h2>
+<p>DataJoint uses MySQL&#8217;s InnoDB engine as its back end. The data size limits can be found in the <a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/limits.html">MySQL documentation</a>. For example, the maximum table space managed by the InnoDB engine (DataJoint&#8217;s default) is 64 TiB, but the data are typically distributed across multiple tables.</p>
+<p>The daily output of our lab may be on the order of hundreds of GB of raw data. The processing chain extracts only the essential data and imports it into the database. Still, even the essential data may exceed tens of GB per day.</p>
+</div>
+<div class="section" id="do-you-store-raw-data-in-the-database">
+<h2>Do you store raw data in the database?<a class="headerlink" href="#do-you-store-raw-data-in-the-database" title="Permalink to this headline">¶</a></h2>
+<p>Typically not. The acquisition software writes out the raw data into files. The DataJoint processing chain then imports the essential data from raw files. For example, the class <a class="reference external" href="https://github.com/atlab/sessions/blob/master/schemas/%2Baod/TraceSet.m">aod.TraceSet</a> extracts the fluorescence traces for a set of cells in an AOD-based two-photon scan. The raw scan data is read from an external file and only the significantly smaller result of the computation is stored in the database (See <a class="reference external" href="https://github.com/atlab/sessions">https://github.com/atlab/sessions</a>).</p>
+<blockquote>
+<div>However, it&#8217;s up to the user to decide which data go into the database. Since DataJoint uses regular MySQL tables to store data, other software can be written to write data directly into the database bypassing DataJoint altogether.</div></blockquote>
+</div>
+<div class="section" id="what-alternative-systems-did-you-consider-and-why-did-you-end-up-writing-your-own-system">
+<h2>What alternative systems did you consider and why did you end up writing your own system?<a class="headerlink" href="#what-alternative-systems-did-you-consider-and-why-did-you-end-up-writing-your-own-system" title="Permalink to this headline">¶</a></h2>
+<p>In many labs, the default data management scheme comprises the OS file system with clever naming conventions with additional meta data stored in CSV, XML, .MAT files, for example. This works fine for dead storage, but makes more interesting queries difficult.  Also, data dependencies are difficult to maintain.</p>
+<p>Another alternative is to use a relational database system (e.g. MySQL) using SQL. However, SQL queries are typically cumbersome. SQL requires significant training to be used effectively. DataJoint makes using the proper relational data model easier.</p>
+<p>DataJoint met our need for a flexible, light-weight, yet capable system that is easy to learn and use.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../about.html">About DataJoint</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="citing.html">Citing DataJoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Frequently Asked Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#what-is-datajoint">What is DataJoint?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#what-datajoint-is-not">What DataJoint is not</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/About/faq.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\About\faq.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\About\faq.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/About/faq.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

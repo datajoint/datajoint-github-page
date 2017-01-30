@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Computed Tables &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../documentation.html" />
+    <link rel="next" title="Distributed Processing" href="distributed_processing.html" />
+    <link rel="prev" title="Representing Table Relationships" href="base_relvar.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="computed-tables">
+<h1>Computed Tables<a class="headerlink" href="#computed-tables" title="Permalink to this headline">¶</a></h1>
+<p>Computing new data in DataJoint is a form of the <a class="reference external" href="https://github.com/datajoint/datajoint-matlab/wiki/Projection#extend">extend operator</a>: an existing relation is extended to include new computed attributes. The existing relation will here will be called the <em>populate relation</em> or <code class="docutils literal"><span class="pre">popRel</span></code>. The extended relation is then stored in a new computed table with a corresponding class.</p>
+<div class="section" id="creating-a-computed-table">
+<h2>Creating a computed table<a class="headerlink" href="#creating-a-computed-table" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="matlab-computed-tables">
+<h3>Matlab computed tables<a class="headerlink" href="#matlab-computed-tables" title="Permalink to this headline">¶</a></h3>
+<p>You may use the <code class="docutils literal"><span class="pre">dj.new</span></code> utility to create a new computed class or create on manually.</p>
+<p>To configure a table to be populated automatically, its class must have three additional features:</p>
+<ol class="arabic simple">
+<li>inherit from class <code class="docutils literal"><span class="pre">dj.AutoPopulate</span></code></li>
+<li>define the populate relation as a constant property <code class="docutils literal"><span class="pre">popRel</span></code></li>
+<li>define the protected method <code class="docutils literal"><span class="pre">makeTuples(self,</span> <span class="pre">key)</span></code></li>
+</ol>
+<p>For example the automatically populated table <cite>tp.Align</cite> has the following definition:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="cm">%{</span>
+<span class="cm">   (skipped) table definition here</span>
+<span class="cm">%}</span>
+
+<span class="k">classdef</span> <span class="n">Align</span> <span class="o">&lt;</span> <span class="n">dj</span><span class="p">.</span><span class="n">Relvar</span> <span class="o">&amp;</span> <span class="n">dj</span><span class="p">.</span><span class="n">AutoPopulate</span>
+    <span class="k">properties</span>
+         <span class="n">popRel</span> <span class="p">=</span> <span class="n">common</span><span class="p">.</span><span class="n">TpScan</span>
+    <span class="k">end</span>
+
+    <span class="k">methods</span> <span class="p">(</span><span class="n">Access</span> <span class="p">=</span> <span class="n">protected</span><span class="p">)</span>
+<span class="k">        function</span><span class="w"> </span><span class="nf">makeTuples</span><span class="p">(</span>self, key<span class="p">)</span><span class="w"></span>
+<span class="w">           </span><span class="c">% fetch info from other tables here</span>
+           <span class="p">[</span><span class="n">d1</span><span class="p">,</span><span class="n">d2</span><span class="p">]</span> <span class="p">=</span> <span class="n">fetchn</span><span class="p">(</span><span class="n">OtherTable</span> <span class="o">&amp;</span> <span class="n">key</span><span class="p">,</span> <span class="s">&#39;field1&#39;</span><span class="p">,</span> <span class="s">&#39;field2&#39;</span><span class="p">)</span>
+
+            <span class="c">% compute the required fields here</span>
+            <span class="n">key</span><span class="p">.</span><span class="n">extra_field1</span> <span class="p">=</span> <span class="c">....</span>
+            <span class="n">key</span><span class="p">.</span><span class="n">extra_field2</span> <span class="p">=</span> <span class="c">...</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">end</span>
+   <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-computed-tables">
+<h3>Python computed tables<a class="headerlink" href="#python-computed-tables" title="Permalink to this headline">¶</a></h3>
+<p>For Python, the naming is different but the basic mechanisms are the same</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Align</span><span class="p">(</span><span class="n">dj</span><span class="o">.</span><span class="n">Computed</span><span class="p">):</span>
+  <span class="n">definition</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">  # skipped table definition here</span>
+<span class="s2">  &quot;&quot;&quot;</span>
+
+  <span class="nd">@property</span>
+  <span class="k">def</span> <span class="nf">populated_from</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">TpScan</span>
+
+
+  <span class="k">def</span> <span class="nf">_make_tuples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="c1"># fetch data and extend key</span>
+    <span class="c1"># ...</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">insert1</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="populating-a-table">
+<h2>Populating a table<a class="headerlink" href="#populating-a-table" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="matlab-populate">
+<h3>Matlab populate<a class="headerlink" href="#matlab-populate" title="Permalink to this headline">¶</a></h3>
+<p>Once these elements have been defined. Users may populate the table by calling the dj.AutoPopulate&#8217;s method <code class="docutils literal"><span class="pre">populate</span></code> (for debugging or small-scale processing) or <code class="docutils literal"><span class="pre">parpopulate</span></code> (for distributed processing with job management).</p>
+<p>For example, to populate the table defined above:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">populate</span><span class="p">(</span><span class="n">tp</span><span class="p">.</span><span class="n">Align</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The populate methods call <code class="docutils literal"><span class="pre">makeTuples(self,key)</span></code> once with every primary key value of <code class="docutils literal"><span class="pre">tp.Align.popRel</span></code> for which the table does not yet have any matching tuples.</p>
+<p>The populate method accepts arguments that are applied to further restrict the populate relation. For example, to populate <code class="docutils literal"><span class="pre">tp.Align</span></code> only for <code class="docutils literal"><span class="pre">animal_id=107</span></code>:</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">populate</span><span class="p">(</span><span class="n">vis2p</span><span class="p">.</span><span class="n">ScansCorrected</span><span class="p">,</span> <span class="s">&#39;mouse_id=107&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-populate">
+<h3>Python populate<a class="headerlink" href="#python-populate" title="Permalink to this headline">¶</a></h3>
+<p>For Python, the mechanisms are the same, but the syntax is a little different</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">Align</span><span class="p">().</span><span class="n">populate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="determining-the-populate-relations">
+<h2>Determining the populate relations<a class="headerlink" href="#determining-the-populate-relations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="matlab-populate-relation">
+<h3>Matlab populate relation<a class="headerlink" href="#matlab-populate-relation" title="Permalink to this headline">¶</a></h3>
+<p>The populate relation is the relvar for which the current table must have matching tuples. In most cases, this is simply the join of the table&#8217;s immediate ancestors in the hierarchy, but not always.</p>
+</div>
+<div class="section" id="python-populate-relation">
+<h3>Python populate relation<a class="headerlink" href="#python-populate-relation" title="Permalink to this headline">¶</a></h3>
+<p>In Python, the populate relation is implemented by the property <cite>populated_from</cite>. If this function is not implemented, the default behaviour is the join of the table&#8217;s immediate ancestors in the hierarchy.</p>
+</div>
+</div>
+<div class="section" id="defining-maketuples">
+<h2>Defining makeTuples<a class="headerlink" href="#defining-maketuples" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">makeTuples</span></code> (or <code class="docutils literal"><span class="pre">_make_tuples</span></code>) callback must fill out the remaining attributes and insert the newly formed tuple or tuples into the table using the command self.insert(key).</p>
+<p>The <code class="docutils literal"><span class="pre">makeTuples</span></code> callback consists of the following sections:</p>
+<ol class="arabic simple">
+<li>fetch related data from parent tables or parents&#8217; parent tables for the given key</li>
+<li>compute the missing fields in the structure key</li>
+<li>call <code class="docutils literal"><span class="pre">self.insert(key)</span></code></li>
+</ol>
+<p><strong>Important</strong>: for referential integrity, <code class="docutils literal"><span class="pre">makeTuples()</span></code> should only retrieve data from tables that are direct ancestors of the present table and their ancestors&#8217; subtables. Fetching from tables that are not above the current table in the hierarchy may result in outdated tuples when the referenced data are changed. If data are needed from other tables, the schema should be updated to place the desired data above the current table. This constraint is not physically enforced by DataJoint for the sake of performance, making this the user&#8217;s responsibility.</p>
+</div>
+<div class="section" id="subtables">
+<h2>Subtables<a class="headerlink" href="#subtables" title="Permalink to this headline">¶</a></h2>
+<p>A subtable is an imported or computed table that is populated by its ancestor in the table hierarchy. As such, a subtable&#8217;s relvar class does not inherit from dj.AutoPopulate and does not define a populate relation. It may still define some kind of makeTuples callback, however. Their makeTuples callback must be called directly from a parent&#8217;s <code class="docutils literal"><span class="pre">makeTuples</span></code>/<code class="docutils literal"><span class="pre">_make_tuples</span></code>. Thus subtable tuples are always inserted together with their parent tuples in one atomic transaction. In addition, DataJoint disables direct deletes from subtables so that, to delete from a subtable, one must delete from its parent table.</p>
+<p>Subtables enable many-to-one dependencies. Matching tuples in a table and its subtable can be considered as an inseparable group. Another table can now refer to a parent tuple to establish a dependency on the matching group of tuples in the subtable. For example, a single image segmentation, represented by a tuple in table Segmentations results in multiple image masks represented by tuples in Masks, which will appear all together with its parent tuple or not at all. The Segmentations/makeTuples then calls the Masks/makeTuples after inserting its own tuple:</p>
+<div class="section" id="matlab-subtable-example">
+<h3>Matlab subtable example<a class="headerlink" href="#matlab-subtable-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="c">% Segmentations/makeTuples</span>
+<span class="k">function</span><span class="w"> </span><span class="nf">makeTuples</span><span class="p">(</span>self, key<span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">self</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="n">makeTuples</span><span class="p">(</span><span class="n">Masks</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+  <span class="n">makeTuples</span><span class="p">(</span><span class="n">MaskSorts</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-subtable-example">
+<h3>Python subtable example<a class="headerlink" href="#python-subtable-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Segmentations/makeTuples</span>
+<span class="k">def</span> <span class="nf">_make_muples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+  <span class="c1"># computation happens</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="n">Masks</span><span class="p">()</span><span class="o">.</span><span class="n">makeTuples</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="n">MaskSorts</span><span class="p">()</span><span class="o">.</span><span class="n">makeTuples</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="transaction-processing">
+<h2>Transaction processing<a class="headerlink" href="#transaction-processing" title="Permalink to this headline">¶</a></h2>
+<p>Note that makeTuples calls are performed within individual atomic transaction: Inserted tuples do not become visible to the rest of the world until makeTuples exits without errors. If makeTuples fails to complete, any inserts that it has already inserted into the table or its subtables are rolled back and never become visible to other processes. Conversely, changes made by other processes do not become visible to the makeTuples call while it is executing, making the world appear stable within a makeTuples call.</p>
+<p>Transaction processing makes DataJoint transaction-safe: interrupted or failed processes do not leave incomplete data behind.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About DataJoint</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentation.html">DataJoint Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_relvar.html">Representing Table Relationships</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Computed Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-computed-table">Creating a computed table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#populating-a-table">Populating a table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#determining-the-populate-relations">Determining the populate relations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-maketuples">Defining makeTuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subtables">Subtables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transaction-processing">Transaction processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="distributed_processing.html">Distributed Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_relationship_diagram.html">Entitity Relationship Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relvar_ops.html">Relvar Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="working_with_data.html">Working with Data</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../_sources/dj/Documentation/computed_tables.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\computed_tables.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\computed_tables.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/dj/Documentation/computed_tables.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

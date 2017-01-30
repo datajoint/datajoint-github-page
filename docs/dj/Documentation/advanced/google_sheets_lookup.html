@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Google Sheets Lookup &#8212; DataJoint 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/color.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="DataJoint 1 documentation" href="../../../index.html" />
+    <link rel="up" title="DataJoint Documentation" href="../../documentation.html" />
+    <link rel="next" title="Structuring Data" href="table_design_notes.html" />
+    <link rel="prev" title="DataJoint Documentation" href="../../documentation.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="google-sheets-lookup">
+<h1>Google Sheets Lookup<a class="headerlink" href="#google-sheets-lookup" title="Permalink to this headline">¶</a></h1>
+<p>&#8220;How to feed data from google spread sheet into the database&#8221;</p>
+<p>Lookup tables are useful to collect data that is usually only entered once or not updated very often. An example is a list of viruses used in opto-genetic experiments. The table is then used as primary foreign key in later experiments.</p>
+<p>Datajoint-python makes it easy to define and enter values in a lookup table directly in the definition of the relation. When the class is created, datajoint-python checks for a property called <cite>contents</cite>. The only requirement for <cite>contents</cite> is that it must be iterable and yield single entries that can be inserted with <cite>insert1</cite>. This gives it a lot of flexibility. The example below fetches data from a google spreadsheet and enters it in the database. Existing values are ignored. Note that this is not a two-way synchronization between the two tables. It only makes sure that whatever is in the google spreadsheet is also in the database.</p>
+<p>In order to make the example work, you need to follow the <a class="reference external" href="http://gspread.readthedocs.org/en/latest/oauth2.html">instructions</a> how to sign into a google spreadsheet with oauth2. This will give you a <cite>.json</cite> file containing the credentials. You need to share the spreadsheet with the email address contained in this file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">gspread</span>
+<span class="kn">from</span> <span class="nn">oauth2client.client</span> <span class="kn">import</span> <span class="n">SignedJwtAssertionCredentials</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">datajoint</span> <span class="kn">as</span> <span class="nn">dj</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">dj</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="s1">&#39;my_data_base&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+
+<span class="nd">@schema</span>
+<span class="k">class</span> <span class="nc">Virus</span><span class="p">(</span><span class="n">dj</span><span class="o">.</span><span class="n">Lookup</span><span class="p">):</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    #table of viruses</span>
+
+<span class="s2">    virus_id                    : int          # unique id for each produced or purchased virus</span>
+<span class="s2">    -----</span>
+<span class="s2">    virus_name                  : varchar(255) # full virus name</span>
+<span class="s2">    virus_gene                  : varchar(255) # gene name</span>
+<span class="s2">    virus_opsin                 : varchar(255) # opsin version</span>
+<span class="s2">    virus_type                  : varchar(255) # type of virus</span>
+<span class="s2">    serotype = &quot;N/A&quot;            : varchar(255) # AAV serotype</span>
+<span class="s2">    virus_promoter = &quot;N/A&quot;      : varchar(255) # viral promoter</span>
+<span class="s2">    virus_isfloxed              : boolean      # true if expression is dependent on Cre</span>
+<span class="s2">    virus_source                : varchar(255) # source of virus</span>
+<span class="s2">    virus_lot                   : varchar(32)  # lot #</span>
+<span class="s2">    virus_titer                 : float        # titer</span>
+<span class="s2">    virus_notes=&quot;&quot;              : varchar(4095)# free-text notes</span>
+<span class="s2">    virus_ts=CURRENT_TIMESTAMP  : timestamp    # automatic</span>
+
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">json_key</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;my_service_account.json&#39;</span><span class="p">))</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://spreadsheets.google.com/feeds&#39;</span><span class="p">]</span>
+
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">SignedJwtAssertionCredentials</span><span class="p">(</span><span class="n">json_key</span><span class="p">[</span><span class="s1">&#39;client_email&#39;</span><span class="p">],</span> \
+                      <span class="nb">bytes</span><span class="p">(</span><span class="n">json_key</span><span class="p">[</span><span class="s1">&#39;private_key&#39;</span><span class="p">],</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">scope</span><span class="p">)</span>
+        <span class="n">gc</span> <span class="o">=</span> <span class="n">gspread</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+
+        <span class="n">wks</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;Datajoint Virus Lookup&quot;</span><span class="p">)</span>
+        <span class="k">yield from</span> <span class="n">wks</span><span class="o">.</span><span class="n">sheet1</span><span class="o">.</span><span class="n">get_all_records</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/img/dj_logo.png" title="DataJoint Logo"/>
+  </a>
+</p>
+
+<p>
+  DataJoint is an Python/Matlab ORM, designed for busy scientists and collaborative data sharing.
+</p>
+
+<h3>Python Links</h3>
+<p>
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-python&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+
+</p>
+
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-python">DataJoint @ GitHub</a></li>
+<li><a href="https://github.com/datajoint/datajoint-python/issues">Issue Tracker</a></li>
+</ul>
+
+
+<h3>Matlab Links</h3>
+
+  <iframe src="http://ghbtns.com/github-btn.html?user=datajoint&repo=datajoint-matlab&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+<ul>
+  <li><a href="https://github.com/datajoint/datajoint-matlab">DataJoint @ GitHub</a></li>
+  <li><a href="https://github.com/datajoint/datajoint-matlab/issues">Issue Tracker</a></li>
+</ul>
+<h3><a href="../../../index.html">Navigation</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About DataJoint</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">DataJoint Documentation</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <!-- <h3>This Page</h3> -->
+    <!-- <ul class="this-page-menu">
+      <li><a href="../../../_sources/dj/Documentation/advanced/google_sheets_lookup.txt"
+            rel="nofollow">Show Source</a></li> -->
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/edgera/edgera.github.io/blob/master/dj\Documentation\advanced\google_sheets_lookup.rst"
+            rel="nofollow">Show page source on GitHub</a></li>
+          </ul>
+    <!--
+      <li><a href="https://github.com/edgera/edgera.github.io/edit/master/dj\Documentation\advanced\google_sheets_lookup.rst"
+             rel="nofollow">Edit on GitHub</a></li> -->
+
+
+
+
+
+   </div><!-- Looted from https://github.com/kennethreitz/requests Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments-->
+<style type="text/css">
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+</style>
+
+
+<script src="../../../_static//js/konami.js"></script>
+<script>
+  var easter_egg = new Konami('http://fortunes.herokuapp.com/random/raw');
+</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DataJoint.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../../_sources/dj/Documentation/advanced/google_sheets_lookup.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
